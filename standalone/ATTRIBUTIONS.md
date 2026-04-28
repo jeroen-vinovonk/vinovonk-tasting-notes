@@ -1,19 +1,18 @@
 # Attributions
 
+> Independent wine tasting note app. Not affiliated with WSET, CIVC, or any wine education institution.
+
 ## Tasting Methodologies
 
-### Systematic Approach to Tasting (SAT)
-The wine tasting form follows the **SAT framework** — a structured tasting method across Appearance, Nose, Palate and Conclusions, with a quality assessment using the BLIC model (Balance, Length, Intensity, Complexity).
+### Structured wine tasting method
+The wine tasting form follows a **structured tasting method** across Appearance, Nose, Palate and Conclusions, with a quality assessment using the BLIC model (Balance, Length, Intensity, Complexity).
 
 > Used here for educational and personal purposes only. Not an official examination or certification.
 
 ---
 
-### CIVC Champagne Tasting Methodology
-The champagne form uses tasting parameters and terminology developed by the **Comité Interprofessionnel du vin de Champagne (CIVC)**, including mousse quality, bubble size and persistence, autolytic character, disgorgement date and dosage classification.
-
-**Organisation:** Comité Interprofessionnel du vin de Champagne  
-**Website:** [champagne.fr](https://www.champagne.fr)
+### Champagne tasting format
+The champagne form uses standard sparkling-wine tasting parameters and terminology common in the Champagne world: mousse quality, bubble size and persistence, autolytic character, disgorgement date and dosage classification.
 
 ---
 

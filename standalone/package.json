@@ -1,7 +1,7 @@
 {
   "name": "tasting-notes",
   "version": "1.0.0",
-  "description": "Personal wine tasting note tool with SAT and CIVC methodology",
+  "description": "Personal wine tasting note tool with a structured tasting method and Champagne tasting format",
   "private": true,
   "type": "module",
   "scripts": {

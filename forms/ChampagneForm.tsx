@@ -1,6 +1,5 @@
-// Champagne tasting methodology reference:
-// CIVC — Comité Interprofessionnel du vin de Champagne. champagne.fr
-// Parameters: mousse, bubble size/persistence, autolytic character, dosage classification.
+// Champagne tasting form — universal sparkling-wine parameters:
+// mousse, bubble size/persistence, autolytic character, dosage classification.
 
 import { Plus, X } from "lucide-react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";

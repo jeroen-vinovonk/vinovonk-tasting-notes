@@ -1,4 +1,4 @@
-// Wine SAT options (types inlined, no external imports needed)
+// Wine tasting options (types inlined, no external imports needed)
 
 export const wijnTypeOpties = [
 	{ waarde: "wit", label: "Wit" },

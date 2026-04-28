@@ -68,17 +68,17 @@ const CONTENT = {
 		methodiekLabel: "Proefsystemen",
 		methodiekTitle: "Proefmethodieken",
 
-		satName: "Systematic Approach to Tasting (SAT)",
+		satName: "Gestructureerde proefmethode",
 		satDesc:
-			"Basis voor het wijnformulier. De SAT-methode — Uiterlijk, Neus, Gehemelte, Conclusies — is een gestructureerde proefmethode die breed gebruikt wordt in de wijnwereld.",
+			"Basis voor het wijnformulier. De proefmethode — Uiterlijk, Neus, Gehemelte, Conclusies — is een gestructureerde aanpak die breed gebruikt wordt in de wijnwereld.",
 		satNote:
 			"Gebruikt voor educatieve doeleinden. Geen officieel examen of certificering.",
 
-		civcName: "CIVC Champagne Proefmethodiek",
+		civcName: "Champagne-proefformat",
 		civcDesc:
-			"Basis voor het champagneformulier. Parameters als belgrootte, belpersistentie, moussekwaliteit, autolytisch karakter en dosage zijn gebaseerd op de proefterminologie van het Comité Champagne.",
+			"Basis voor het champagneformulier. Parameters als belgrootte, belpersistentie, moussekwaliteit, autolytisch karakter en dosage zijn standaardterminologie binnen de Champagne-wereld.",
 		civcOrg:
-			"Comité Interprofessionnel du vin de Champagne (CIVC) — champagne.fr",
+			"Jeroen volgde gevorderde Champagne-trainingen.",
 
 		bioLabel: "Biodynamische Kalender",
 		bioTitle: "Biodynamische referenties",
@@ -133,17 +133,17 @@ const CONTENT = {
 		methodiekLabel: "Tasting Systems",
 		methodiekTitle: "Tasting Methodologies",
 
-		satName: "Systematic Approach to Tasting (SAT)",
+		satName: "Structured tasting method",
 		satDesc:
-			"Foundation for the wine form. The SAT method — Appearance, Nose, Palate, Conclusions — is a structured tasting approach widely used in the wine world.",
+			"Foundation for the wine form. The method — Appearance, Nose, Palate, Conclusions — is a structured tasting approach widely used in the wine world.",
 		satNote:
 			"Used here for educational purposes. Not an official examination or certification.",
 
-		civcName: "CIVC Champagne Tasting Methodology",
+		civcName: "Champagne tasting format",
 		civcDesc:
-			"Foundation for the champagne form. Parameters such as bubble size, bubble persistence, mousse quality, autolytic character and dosage are based on the tasting terminology of the Comité Champagne.",
+			"Foundation for the champagne form. Parameters such as bubble size, bubble persistence, mousse quality, autolytic character and dosage are standard terminology within the Champagne world.",
 		civcOrg:
-			"Comité Interprofessionnel du vin de Champagne (CIVC) — champagne.fr",
+			"Jeroen completed advanced Champagne trainings.",
 
 		bioLabel: "Biodynamic Calendar",
 		bioTitle: "Biodynamic References",

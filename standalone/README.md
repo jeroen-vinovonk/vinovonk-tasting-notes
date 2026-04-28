@@ -1,8 +1,10 @@
 # Tasting Notes
 
+> Independent wine tasting note app. Not affiliated with WSET, CIVC, or any wine education institution.
+
 A personal wine tasting note tool that runs entirely in your browser. No account, no server, no tracking — all data is stored locally via `localStorage`.
 
-Built on established tasting methodologies: **SAT** (wine), **CIVC** (champagne), with a **biodynamic calendar** based on the work of Maria Thun and computed via the Jean Meeus astronomical algorithm.
+Built on established tasting structures: a structured wine tasting method (Appearance, Nose, Palate, Conclusions), an extended Champagne tasting format, and a **biodynamic calendar** based on the work of Maria Thun and computed via the Jean Meeus astronomical algorithm.
 
 Live demo: **[vinovonk.com/en/tasting/](https://vinovonk.com/en/tasting/)** (EN) · **[vinovonk.com/proeven/](https://vinovonk.com/proeven/)** (NL)
 
@@ -12,7 +14,7 @@ Live demo: **[vinovonk.com/en/tasting/](https://vinovonk.com/en/tasting/)** (EN)
 
 | Feature | Description |
 |---------|-------------|
-| **Wine form** | SAT — Appearance, Nose, Palate, Conclusions + BLIC quality assessment |
+| **Wine form** | Structured tasting method — Appearance, Nose, Palate, Conclusions + BLIC quality assessment |
 | **Champagne form** | Extended with mousse, bubble size, autolytic/oxidative character, dosage, disgorgement |
 | **Spirits form** | Whisky, cognac, gin, rum and more — distillate-specific aroma picker |
 | **Non-alcoholic form** | Wines, beers, kombucha, tea, mocktails — with comparison field |
@@ -81,8 +83,8 @@ vinovonk-tasting/
 See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for full credits.
 
 **Tasting methodology references:**
-- **SAT** — Systematic Approach to Tasting
-- **CIVC** — Comité Interprofessionnel du vin de Champagne ([champagne.fr](https://www.champagne.fr))
+- **Structured wine tasting** — Appearance, Nose, Palate, Conclusions
+- **Champagne tasting format** — extended sparkling-wine parameters (mousse, bubble size, autolysis, dosage)
 
 **Biodynamic calendar:**
 - **Maria Thun** (1922–2012) — biodynamic sowing calendar framework

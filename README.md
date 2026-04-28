@@ -3,6 +3,8 @@
 [![Deploy to GitHub Pages](https://github.com/vinovonk/vinovonk-tasting/actions/workflows/deploy.yml/badge.svg)](https://github.com/vinovonk/vinovonk-tasting/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+> Independent wine tasting note app. Not affiliated with WSET, CIVC, or any wine education institution.
+
 Personal wine tasting note tool that runs entirely in your browser. No account, no server, no tracking — all data stored locally via `localStorage`.
 
 **Live:** [vinovonk.com/en/tasting/](https://vinovonk.com/en/tasting/) (EN) · [vinovonk.com/proeven/](https://vinovonk.com/proeven/) (NL)
@@ -13,7 +15,7 @@ Personal wine tasting note tool that runs entirely in your browser. No account, 
 
 | | |
 |---|---|
-| **Wine form** | SAT — Appearance, Nose, Palate, Conclusions + BLIC quality assessment |
+| **Wine form** | Structured tasting method — Appearance, Nose, Palate, Conclusions + BLIC quality assessment |
 | **Champagne form** | Extended with mousse, bubble size, autolytic/oxidative character, dosage, disgorgement |
 | **Spirits form** | Whisky, cognac, gin, rum and more — distillate-specific aroma picker |
 | **Non-alcoholic** | Wines, beers, kombucha, tea, mocktails — with comparison field |
@@ -71,8 +73,8 @@ vinovonk-tasting/
 
 ## Tasting methodologies
 
-- **SAT** — Systematic Approach to Tasting: Appearance, Nose, Palate, Conclusions
-- **CIVC** — Comité Interprofessionnel du vin de Champagne ([champagne.fr](https://www.champagne.fr))
+- **Structured wine tasting** — Appearance, Nose, Palate, Conclusions
+- **Champagne tasting format** — extended sparkling-wine parameters (mousse, bubble size, autolysis, dosage)
 - **Biodynamic calendar** — Maria Thun framework, computed via Jean Meeus astronomical algorithm
 
 See [standalone/ATTRIBUTIONS.md](standalone/ATTRIBUTIONS.md) for full credits.

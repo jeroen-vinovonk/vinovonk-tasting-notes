@@ -1,4 +1,4 @@
-// Spirits SAT options
+// Spirits tasting options
 
 export const spiritTypeOpties = [
 	{ waarde: "whisky", label: "Whisky" },

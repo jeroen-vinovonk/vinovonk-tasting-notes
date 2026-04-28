@@ -130,11 +130,10 @@ const CONTENT = {
 		wijnTitle: "Proefmethodiek",
 		wijnP1: (
 			<>
-				Het wijnformulier volgt de{" "}
-				<strong>Systematic Approach to Tasting (SAT)</strong> — een
-				gestructureerde proefmethode op basis van uiterlijk, neus, gehemelte en
-				conclusies. Ideaal als je gestructureerd wil leren proeven of notities
-				wil vastleggen die je later kunt vergelijken.
+				Het wijnformulier volgt een{" "}
+				<strong>gestructureerde proefmethode</strong> op basis van uiterlijk,
+				neus, gehemelte en conclusies. Ideaal als je gestructureerd wil leren
+				proeven of notities wil vastleggen die je later kunt vergelijken.
 			</>
 		),
 		wijnP2: (
@@ -360,10 +359,10 @@ const CONTENT = {
 		wijnTitle: "Tasting methodology",
 		wijnP1: (
 			<>
-				The wine form follows the{" "}
-				<strong>Systematic Approach to Tasting (SAT)</strong> — a structured
-				tasting method based on appearance, nose, palate and conclusions. Ideal
-				for structured learning or recording notes you can compare later.
+				The wine form follows a{" "}
+				<strong>structured tasting method</strong> based on appearance, nose,
+				palate and conclusions. Ideal for structured learning or recording
+				notes you can compare later.
 			</>
 		),
 		wijnP2: (

@@ -1,4 +1,4 @@
-// CIVC Champagne Specialist — Tasting options
+// Champagne tasting options
 
 export const cuveeTypeOpties = [
 	{

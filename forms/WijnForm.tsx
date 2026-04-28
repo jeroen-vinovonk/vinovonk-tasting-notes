@@ -1,4 +1,4 @@
-// Wine tasting form — Systematic Approach to Tasting (SAT) structure.
+// Wine tasting form — structured tasting method (Appearance, Nose, Palate, Conclusions).
 
 import { Award, Eye, FileText, Flower2, UtensilsCrossed } from "lucide-react";
 import { forwardRef, useImperativeHandle, useState } from "react";

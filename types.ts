@@ -2,7 +2,7 @@
 // Geport van vinovonk/vinovonk Next.js app
 
 // ================================================================
-// WIJN PROEF (SAT)
+// WIJN PROEF
 // ================================================================
 
 export type WijnType = "wit" | "rosé" | "rood" | "mousserend" | "versterkt";
@@ -184,7 +184,7 @@ export function createEmptyWineTasting(): WijnProef {
 }
 
 // ================================================================
-// CHAMPAGNE (CIVC)
+// CHAMPAGNE
 // ================================================================
 
 export type ChampagneCuveeType = "nv" | "millesime" | "prestige";
