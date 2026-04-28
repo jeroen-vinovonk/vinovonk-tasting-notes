@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Personal wine tasting note tool with a structured tasting method and Champagne tasting format",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev":     "vite",
