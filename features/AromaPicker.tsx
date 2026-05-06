@@ -10,6 +10,7 @@ import {
 	tertiaireAromas,
 } from "../data/aroma-lexicon";
 import type { Lang } from "../lib/form-labels";
+import { useTermsLang } from "../lib/terms-lang";
 
 interface AromaPickerProps {
 	primair: string[];
@@ -19,7 +20,32 @@ interface AromaPickerProps {
 	onSecundairChange: (aromas: string[]) => void;
 	onTertiairChange: (aromas: string[]) => void;
 	lang?: Lang;
+	mode?: "list" | "tiles";
 }
+
+const TILE_CATEGORIES_NL = [
+	"Fruit",
+	"Bloem",
+	"Kruid",
+	"Specerij",
+	"Aarde",
+	"Hout",
+	"Boter",
+	"Brood",
+	"Anders",
+];
+
+const TILE_CATEGORIES_EN: Record<string, string> = {
+	Fruit: "Fruit",
+	Bloem: "Floral",
+	Kruid: "Herb",
+	Specerij: "Spice",
+	Aarde: "Earth",
+	Hout: "Oak",
+	Boter: "Butter",
+	Brood: "Bread",
+	Anders: "Other",
+};
 
 const SECTION_LABEL = {
 	primair: "Primary",
@@ -53,12 +79,93 @@ export function AromaPicker({
 	onSecundairChange,
 	onTertiairChange,
 	lang = "nl",
+	mode = "list",
 }: AromaPickerProps) {
 	const [zoekterm, setZoekterm] = useState("");
 	const [customAroma, setCustomAroma] = useState("");
 	const isEN = lang === "en";
+	const [termsLang] = useTermsLang(lang);
+	const isENterms = termsLang === "en";
 
 	const alle = [...primair, ...secundair, ...tertiair];
+
+	if (mode === "tiles") {
+		const toggleTile = (cat: string) => {
+			const key = cat.toLowerCase();
+			if (primair.includes(key)) {
+				onPrimairChange(primair.filter((p) => p !== key));
+			} else {
+				onPrimairChange([...primair, key]);
+			}
+		};
+		return (
+			<div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+				<span
+					style={{
+						fontFamily: "var(--font-body)",
+						fontWeight: 700,
+						fontSize: "0.68rem",
+						letterSpacing: "0.12em",
+						textTransform: "uppercase",
+						color: "var(--color-on-surface)",
+					}}
+				>
+					{isEN ? "Aroma categories" : "Aromacategorieën"}
+				</span>
+				<p
+					style={{
+						fontFamily: "var(--font-body)",
+						fontSize: "0.78rem",
+						color: "var(--color-gray)",
+						margin: 0,
+					}}
+				>
+					{isEN
+						? "Pick one or more categories. You can refine later by switching to a higher level."
+						: "Kies één of meer categorieën. Later kun je verfijnen door naar een hoger niveau te schakelen."}
+				</p>
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+						gap: "4px",
+					}}
+				>
+					{TILE_CATEGORIES_NL.map((cat) => {
+						const key = cat.toLowerCase();
+						const sel = primair.includes(key);
+						const label = isENterms ? TILE_CATEGORIES_EN[cat] : cat;
+						return (
+							<button
+								key={cat}
+								type="button"
+								onClick={() => toggleTile(cat)}
+								aria-pressed={sel}
+								style={{
+									minHeight: 60,
+									padding: "0.75rem",
+									fontFamily: "var(--font-body)",
+									fontSize: "0.85rem",
+									fontWeight: 700,
+									letterSpacing: "0.08em",
+									textTransform: "uppercase",
+									cursor: "pointer",
+									background: sel
+										? "var(--color-primary)"
+										: "var(--color-white)",
+									color: sel ? "#fff" : "var(--color-on-surface)",
+									border: `4px solid ${sel ? "var(--color-primary)" : "var(--color-border)"}`,
+									boxShadow: sel ? "4px 4px 0 var(--color-on-surface)" : "none",
+								}}
+							>
+								{label}
+							</button>
+						);
+					})}
+				</div>
+			</div>
+		);
+	}
 
 	const labelStyle = {
 		fontFamily: "var(--font-body)",
@@ -119,7 +226,7 @@ export function AromaPicker({
 									border: `2px solid ${c.border}`,
 								}}
 							>
-								{isEN ? (EN_AROMA_LABELS[a] ?? a) : a}
+								{isENterms ? (EN_AROMA_LABELS[a] ?? a) : a}
 								<button
 									type="button"
 									onClick={() => onChange(lijst.filter((x) => x !== a))}
@@ -283,6 +390,8 @@ function AromaLijst({
 	lang?: Lang;
 }) {
 	const isEN = lang === "en";
+	const [termsLang] = useTermsLang(lang);
+	const isENterms = termsLang === "en";
 	const toggle = (aroma: string) =>
 		geselecteerd.includes(aroma)
 			? onChange(geselecteerd.filter((a) => a !== aroma))
@@ -293,7 +402,7 @@ function AromaLijst({
 	const matchesSearch = (a: string) => {
 		if (!term) return true;
 		if (a.toLowerCase().includes(term)) return true;
-		if (isEN) return (EN_AROMA_LABELS[a] ?? "").toLowerCase().includes(term);
+		if (isENterms) return (EN_AROMA_LABELS[a] ?? "").toLowerCase().includes(term);
 		return false;
 	};
 
@@ -346,7 +455,7 @@ function AromaLijst({
 							marginBottom: "0.5rem",
 						}}
 					>
-						{isEN
+						{isENterms
 							? (EN_CATEGORIE_LABELS[cat.categorie] ?? cat.categorie)
 							: cat.categorie}
 					</h4>
@@ -360,14 +469,14 @@ function AromaLijst({
 									marginBottom: "0.375rem",
 								}}
 							>
-								{isEN
+								{isENterms
 									? (EN_SUBCATEGORIE_LABELS[sub.naam] ?? sub.naam)
 									: sub.naam}
 							</p>
 							<div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
 								{sub.aromas.map((aroma) => {
 									const sel = geselecteerd.includes(aroma);
-									const label = isEN
+									const label = isENterms
 										? (EN_AROMA_LABELS[aroma] ?? aroma)
 										: aroma;
 									return (

@@ -1,27 +1,29 @@
 // Wine tasting form — structured tasting method (Appearance, Nose, Palate, Conclusions).
 
 import { Award, Eye, FileText, Flower2, UtensilsCrossed } from "lucide-react";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { zoekLanden, zoekRegios } from "../data/wijn-regio-database";
 import {
-	afdronkLengteOpties,
-	bodyOpties,
-	conditieOpties,
-	drinkbaarheidOpties,
-	helderheidOpties,
-	intensiteitDrieOpties,
-	intensiteitVijfOpties,
-	kleurRoodOpties,
-	kleurRoséOpties,
-	kleurWitOpties,
-	kwaliteitOpties,
-	mousseOpties,
-	ontwikkelingOpties,
-	schaalVijfOpties,
-	wijnTypeOpties,
-	zoetheidOpties,
+	afdronkLengteOptiesBi,
+	bodyOptiesBi,
+	conditieOptiesBi,
+	drinkbaarheidOptiesBi,
+	helderheidOptiesBi,
+	intensiteitDrieOptiesBi,
+	intensiteitVijfOptiesBi,
+	kleurRoodOptiesBi,
+	kleurRoséOptiesBi,
+	kleurWitOptiesBi,
+	kwaliteitOptiesBi,
+	localizeOpties,
+	mousseOptiesBi,
+	ontwikkelingOptiesBi,
+	schaalVijfOptiesBi,
+	wijnTypeOptiesBi,
+	zoetheidOptiesBi,
 } from "../data/wine-options";
+import { useTermsLang } from "../lib/terms-lang";
 import { AromaPicker } from "../features/AromaPicker";
 import { AutocompleteInput } from "../features/AutocompleteInput";
 import { DruivenInput } from "../features/DruivenInput";
@@ -54,6 +56,10 @@ interface Props {
 	onSave: (data: WijnProef, notitie?: string, score?: number) => void;
 	fase?: "info" | "proeven";
 	lang?: Lang;
+	level?: import("../lib/level").Level;
+	tab?: string;
+	onTabChange?: (tab: string) => void;
+	hideTabsList?: boolean;
 }
 
 function mergeAromas(a: AromaKenmerken, b: AromaKenmerken): AromaKenmerken {
@@ -151,16 +157,42 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 		onSave,
 		fase,
 		lang = "nl",
+		level = "expert",
+		tab: tabProp,
+		onTabChange,
+		hideTabsList = false,
 	},
 	ref,
 ) {
+	const showDetails = level === "expert";
 	const [data, setData] = useState<WijnProef>(
 		initialData || createEmptyWineTasting(),
 	);
 	const [notitie, setNotitie] = useState(initNotitie || "");
 	const [score, setScore] = useState<number | undefined>(initScore);
-	const [tab, setTab] = useState("appearance");
+	const [internalTab, setInternalTab] = useState("appearance");
+	const tab = tabProp ?? internalTab;
+	const setTab = onTabChange ?? setInternalTab;
 	const L = FL[lang];
+	const [termsLang] = useTermsLang(lang);
+
+	// Localized option arrays (re-compute when termsLang changes)
+	const wijnTypeOpties = useMemo(() => localizeOpties(wijnTypeOptiesBi, termsLang), [termsLang]);
+	const helderheidOpties = useMemo(() => localizeOpties(helderheidOptiesBi, termsLang), [termsLang]);
+	const intensiteitDrieOpties = useMemo(() => localizeOpties(intensiteitDrieOptiesBi, termsLang), [termsLang]);
+	const kleurWitOpties = useMemo(() => localizeOpties(kleurWitOptiesBi, termsLang), [termsLang]);
+	const kleurRoséOpties = useMemo(() => localizeOpties(kleurRoséOptiesBi, termsLang), [termsLang]);
+	const kleurRoodOpties = useMemo(() => localizeOpties(kleurRoodOptiesBi, termsLang), [termsLang]);
+	const conditieOpties = useMemo(() => localizeOpties(conditieOptiesBi, termsLang), [termsLang]);
+	const intensiteitVijfOpties = useMemo(() => localizeOpties(intensiteitVijfOptiesBi, termsLang), [termsLang]);
+	const ontwikkelingOpties = useMemo(() => localizeOpties(ontwikkelingOptiesBi, termsLang), [termsLang]);
+	const mousseOpties = useMemo(() => localizeOpties(mousseOptiesBi, termsLang), [termsLang]);
+	const zoetheidOpties = useMemo(() => localizeOpties(zoetheidOptiesBi, termsLang), [termsLang]);
+	const schaalVijfOpties = useMemo(() => localizeOpties(schaalVijfOptiesBi, termsLang), [termsLang]);
+	const bodyOpties = useMemo(() => localizeOpties(bodyOptiesBi, termsLang), [termsLang]);
+	const afdronkLengteOpties = useMemo(() => localizeOpties(afdronkLengteOptiesBi, termsLang), [termsLang]);
+	const kwaliteitOpties = useMemo(() => localizeOpties(kwaliteitOptiesBi, termsLang), [termsLang]);
+	const drinkbaarheidOpties = useMemo(() => localizeOpties(drinkbaarheidOptiesBi, termsLang), [termsLang]);
 
 	useImperativeHandle(
 		ref,
@@ -301,7 +333,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 						<ButtonGroup
 							label={L.typeWijn}
 							opties={
-								getWijnTypeOpties(lang) as unknown as {
+								getWijnTypeOpties(termsLang) as unknown as {
 									waarde: string;
 									label: string;
 								}[]
@@ -432,6 +464,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 			{toonProeven && (
 				<>
 					<Tabs value={tab} onValueChange={setTab}>
+						{!hideTabsList && (
 						<TabsList>
 							<TabsTrigger value="appearance">
 								<Eye size={14} style={{ marginRight: "0.25rem" }} />
@@ -469,11 +502,14 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 									</span>
 								)}
 							</TabsTrigger>
-							<TabsTrigger value="details">
-								<FileText size={14} style={{ marginRight: "0.25rem" }} />
-								<span>{L.details}</span>
-							</TabsTrigger>
+							{showDetails && (
+								<TabsTrigger value="details">
+									<FileText size={14} style={{ marginRight: "0.25rem" }} />
+									<span>{L.details}</span>
+								</TabsTrigger>
+							)}
 						</TabsList>
+						)}
 
 						{/* APPEARANCE */}
 						<TabsContent value="appearance">
@@ -504,9 +540,13 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 												},
 											})
 										}
+										jargonTerm="helderheid"
+										lang={lang}
 									/>
 									<ButtonGroup
 										label={L.intensiteit}
+										jargonTerm="intensiteit"
+										lang={lang}
 										opties={
 											intensiteitDrieOpties as unknown as {
 												waarde: string;
@@ -526,6 +566,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 									/>
 									<ButtonGroup
 										label={L.kleur}
+										jargonTerm="kleur"
+										lang={lang}
 										opties={
 											kleurOpties as unknown as {
 												waarde: string;
@@ -545,6 +587,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 										}
 										showColor
 									/>
+									{level === "expert" && (
 									<Textarea
 										label={L.overigeObservaties}
 										placeholder={L.uiterlijkOverig_placeholder}
@@ -560,6 +603,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 										}
 										rows={2}
 									/>
+									)}
 								</CardContent>
 							</Card>
 						</TabsContent>
@@ -585,7 +629,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											gap: "0.5rem",
 										}}
 									>
-										<span style={{ ...labelStyle, fontStyle: "italic" }}>
+										<span style={labelStyle}>
 											{L.vibe}
 										</span>
 										<p
@@ -599,7 +643,11 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											{L.vibeDesc}
 										</p>
 										<Textarea
-											placeholder="warm apple pie with whipped cream, grandmother's garden, fresh brioche..."
+											placeholder={
+												lang === "en"
+													? "warm apple pie with whipped cream, grandmother's garden, fresh brioche..."
+													: "warme appeltaart met slagroom, oma's tuin, verse brioche..."
+											}
 											value={data.neus.vibe || ""}
 											onChange={(e) =>
 												setData({
@@ -610,8 +658,11 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											rows={2}
 										/>
 									</div>
+									{level === "expert" && (
 									<ButtonGroup
 										label={L.conditie}
+										jargonTerm="conditie"
+										lang={lang}
 										opties={
 											conditieOpties as unknown as {
 												waarde: string;
@@ -629,8 +680,11 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											})
 										}
 									/>
+									)}
 									<ButtonGroup
 										label={L.intensiteit}
+										jargonTerm="intensiteit"
+										lang={lang}
 										opties={
 											intensiteitVijfOpties as unknown as {
 												waarde: string;
@@ -689,6 +743,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											})
 										}
 										lang={lang}
+										mode={level === "beginner" ? "tiles" : "list"}
 									/>
 									<ButtonGroup
 										label={L.ontwikkeling}
@@ -708,6 +763,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 												},
 											})
 										}
+										jargonTerm="ontwikkeling"
+										lang={lang}
 									/>
 								</CardContent>
 							</Card>
@@ -743,6 +800,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											})
 										}
 										size="sm"
+										jargonTerm="zoetheid"
+										lang={lang}
 									/>
 									<ButtonGroup
 										label={L.zuurgraad}
@@ -762,6 +821,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 												},
 											})
 										}
+										jargonTerm="zuurgraad"
+										lang={lang}
 									/>
 									{toonTannine && (
 										<ButtonGroup
@@ -782,6 +843,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 													},
 												})
 											}
+											jargonTerm="tannine"
+											lang={lang}
 										/>
 									)}
 									{toonMousse && (
@@ -804,10 +867,14 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 													},
 												})
 											}
+											jargonTerm="mousse"
+											lang={lang}
 										/>
 									)}
 									<ButtonGroup
 										label={L.alcohol}
+										jargonTerm="alcoholgevoel"
+										lang={lang}
 										opties={
 											schaalVijfOpties as unknown as {
 												waarde: string;
@@ -827,6 +894,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 									/>
 									<ButtonGroup
 										label="Body"
+										jargonTerm="body"
+										lang={lang}
 										opties={
 											bodyOpties as unknown as {
 												waarde: string;
@@ -844,8 +913,11 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											})
 										}
 									/>
+									{level === "expert" && (
 									<ButtonGroup
 										label={L.smaakintensiteit}
+										jargonTerm="smaakintensiteit"
+										lang={lang}
 										opties={
 											intensiteitVijfOpties as unknown as {
 												waarde: string;
@@ -864,6 +936,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 											})
 										}
 									/>
+									)}
 									<div
 										style={{
 											borderTop: "4px solid var(--color-border)",
@@ -920,6 +993,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 												})
 											}
 											lang={lang}
+											mode={level === "beginner" ? "tiles" : "list"}
 										/>
 									</div>
 									<div
@@ -949,6 +1023,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 													},
 												})
 											}
+											jargonTerm="afdronk"
+											lang={lang}
 										/>
 									</div>
 								</CardContent>
@@ -1034,6 +1110,8 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 									</div>
 									<ButtonGroup
 										label={L.drinkbaarheid}
+										jargonTerm="drinkrijpheid"
+										lang={lang}
 										opties={
 											drinkbaarheidOpties as unknown as {
 												waarde: string;
@@ -1134,7 +1212,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 								>
 									<ButtonGroup
 										label={L.hoeVerkregen}
-										opties={getHerkomstOpties(lang)}
+										opties={getHerkomstOpties(termsLang)}
 										waarde={data.details?.herkomst ?? null}
 										onChange={(v) =>
 											setData({
@@ -1249,7 +1327,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 									/>
 									<ButtonGroup
 										label={L.opnieuwKopen}
-										opties={getOpnieuwKopenOpties(lang)}
+										opties={getOpnieuwKopenOpties(termsLang)}
 										waarde={data.details?.opnieuwKopen ?? null}
 										onChange={(v) =>
 											setData({
@@ -1283,7 +1361,7 @@ export const WijnForm = forwardRef<WijnFormHandle, Props>(function WijnForm(
 										<div
 											style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}
 										>
-											{getAanbevolenVoorOpties(lang).map((opt) => {
+											{getAanbevolenVoorOpties(termsLang).map((opt) => {
 												const sel = (
 													data.details?.aanbevolenVoor || []
 												).includes(

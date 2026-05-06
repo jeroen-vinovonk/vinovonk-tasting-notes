@@ -13,7 +13,7 @@ export const FL = {
 		// Tab names
 		uiterlijk: "Uiterlijk",
 		neus: "Neus",
-		gehemelte: "Gehemelte",
+		gehemelte: "Mond",
 		mondgevoel: "Mondgevoel",
 		conclusies: "Conclusies",
 		details: "Details",
@@ -186,7 +186,7 @@ export const FL = {
 		// Tabs (korte vorm voor validatie-dictionary)
 		tabUiterlijk: "Uiterlijk",
 		tabNeus: "Neus",
-		tabGehemelte: "Gehemelte",
+		tabGehemelte: "Mond",
 		tabConclusies: "Conclusies",
 	},
 	en: {

@@ -11,8 +11,20 @@ import type { SpiritsFormHandle } from "../forms/SpiritsForm";
 import { SpiritsForm } from "../forms/SpiritsForm";
 import type { WijnFormHandle } from "../forms/WijnForm";
 import { WijnForm } from "../forms/WijnForm";
+import { useLevel } from "../lib/level";
 import { compressImage, getSession, updateFles } from "../lib/storage";
 import { navigate } from "../router";
+import {
+	ALCOHOLVRIJ_STEPS_EN,
+	ALCOHOLVRIJ_STEPS_NL,
+	BeginnerWizard,
+	CHAMPAGNE_STEPS_EN,
+	CHAMPAGNE_STEPS_NL,
+	SPIRITS_STEPS_EN,
+	SPIRITS_STEPS_NL,
+	WIJN_STEPS_EN,
+	WIJN_STEPS_NL,
+} from "./BeginnerWizard";
 import type {
 	AlcoholVrijTasting,
 	AnderDrankType,
@@ -33,6 +45,7 @@ import {
 } from "../types";
 import { Button } from "../ui/Button";
 import { Card, CardContent } from "../ui/Card";
+import { NiveauChooser } from "./NiveauChooser";
 
 interface BottleTastingProps {
 	sessionId: string;
@@ -78,6 +91,9 @@ const DRANK_OPTIES: { waarde: DrankType; nl: string; en: string }[] = [
 ];
 
 const isTweeFase = (t: DrankType) => t === "wijn" || t === "champagne";
+const useTwoFase = (t: DrankType, level: string) =>
+	isTweeFase(t) ||
+	(level === "beginner" && (t === "spirit" || t === "alcoholvrij"));
 
 const backBtnStyle: React.CSSProperties = {
 	background: "none",
@@ -145,6 +161,9 @@ export function BottleTasting({
 		() => fles?.drankType ?? "wijn",
 	);
 	const [fase, setFase] = useState<"info" | "proeven">("info");
+	const [level, setLevel] = useLevel();
+	const [chooserDone, setChooserDone] = useState(() => hasMeaningfulData(fles));
+	const [wizardTab, setWizardTab] = useState<string>("appearance");
 	const [fotoFile, setFotoFile] = useState<File | null>(null);
 	const [saving, setSaving] = useState(false);
 
@@ -268,6 +287,18 @@ export function BottleTasting({
 	const genericDrankType: AnderDrankType =
 		drankType === "bier" ? "bier" : drankType === "sake" ? "sake" : "anders";
 
+	if (!chooserDone) {
+		return (
+			<NiveauChooser
+				lang={lang}
+				value={level}
+				onChange={setLevel}
+				onContinue={() => setChooserDone(true)}
+				onBack={() => navigate(`/sessie/${sessionId}`)}
+			/>
+		);
+	}
+
 	return (
 		<div
 			style={{
@@ -328,7 +359,7 @@ export function BottleTasting({
 			</Card>
 
 			{/* Fase stepper for wijn / champagne */}
-			{isTweeFase(drankType) && (
+			{useTwoFase(drankType, level) && (
 				<div style={{ display: "flex", gap: "2px", marginBottom: "1.5rem" }}>
 					<div style={stepStyle(fase === "info")}>1. {t.info}</div>
 					<div style={stepStyle(fase === "proeven")}>2. {t.proeven}</div>
@@ -336,7 +367,7 @@ export function BottleTasting({
 			)}
 
 			{/* Back-to-info button when in proeven fase */}
-			{isTweeFase(drankType) && fase === "proeven" && (
+			{useTwoFase(drankType, level) && fase === "proeven" && (
 				<div style={{ marginBottom: "1rem" }}>
 					<Button variant="outline" onClick={() => setFase("info")}>
 						{t.terugInfo}
@@ -346,7 +377,28 @@ export function BottleTasting({
 
 			{/* === FORMS === */}
 
-			{drankType === "wijn" && (
+			{drankType === "wijn" && level === "beginner" && fase === "proeven" ? (
+				<BeginnerWizard
+					steps={lang === "en" ? WIJN_STEPS_EN : WIJN_STEPS_NL}
+					currentStepId={wizardTab}
+					onStepChange={setWizardTab}
+					lang={lang}
+				>
+					<WijnForm
+						ref={wijnRef}
+						fase={fase}
+						initialData={initialWijnData}
+						persoonlijkeNotitie={fles.persoonlijkeNotitie}
+						score={fles.score}
+						onSave={handleSave}
+						lang={lang}
+						level={level}
+						tab={wizardTab}
+						onTabChange={setWizardTab}
+						hideTabsList
+					/>
+				</BeginnerWizard>
+			) : drankType === "wijn" ? (
 				<WijnForm
 					ref={wijnRef}
 					fase={fase}
@@ -355,10 +407,32 @@ export function BottleTasting({
 					score={fles.score}
 					onSave={handleSave}
 					lang={lang}
+					level={level}
 				/>
-			)}
+			) : null}
 
-			{drankType === "champagne" && (
+			{drankType === "champagne" && level === "beginner" && fase === "proeven" ? (
+				<BeginnerWizard
+					steps={lang === "en" ? CHAMPAGNE_STEPS_EN : CHAMPAGNE_STEPS_NL}
+					currentStepId={wizardTab === "appearance" ? "visueel" : wizardTab}
+					onStepChange={setWizardTab}
+					lang={lang}
+				>
+					<ChampagneForm
+						ref={champagneRef}
+						fase={fase}
+						initialData={initialChampagneData}
+						persoonlijkeNotitie={fles.persoonlijkeNotitie}
+						score={fles.score}
+						onSave={handleSave}
+						lang={lang}
+						level={level}
+						tab={wizardTab === "appearance" ? "visueel" : wizardTab}
+						onTabChange={setWizardTab}
+						hideTabsList
+					/>
+				</BeginnerWizard>
+			) : drankType === "champagne" ? (
 				<ChampagneForm
 					ref={champagneRef}
 					fase={fase}
@@ -367,10 +441,43 @@ export function BottleTasting({
 					score={fles.score}
 					onSave={handleSave}
 					lang={lang}
+					level={level}
 				/>
-			)}
+			) : null}
 
-			{drankType === "spirit" && (
+			{drankType === "spirit" && level === "beginner" && fase === "proeven" ? (
+				<BeginnerWizard
+					steps={lang === "en" ? SPIRITS_STEPS_EN : SPIRITS_STEPS_NL}
+					currentStepId={wizardTab}
+					onStepChange={setWizardTab}
+					lang={lang}
+				>
+					<SpiritsForm
+						ref={spiritsRef}
+						fase="proeven"
+						initialData={initialSpiritsData}
+						persoonlijkeNotitie={fles.persoonlijkeNotitie}
+						score={fles.score}
+						onSave={handleSave}
+						lang={lang}
+						level={level}
+						tab={wizardTab}
+						onTabChange={setWizardTab}
+						hideTabsList
+					/>
+				</BeginnerWizard>
+			) : drankType === "spirit" && level === "beginner" ? (
+				<SpiritsForm
+					ref={spiritsRef}
+					fase="info"
+					initialData={initialSpiritsData}
+					persoonlijkeNotitie={fles.persoonlijkeNotitie}
+					score={fles.score}
+					onSave={handleSave}
+					lang={lang}
+					level={level}
+				/>
+			) : drankType === "spirit" ? (
 				<SpiritsForm
 					ref={spiritsRef}
 					initialData={initialSpiritsData}
@@ -378,10 +485,43 @@ export function BottleTasting({
 					score={fles.score}
 					onSave={handleSave}
 					lang={lang}
+					level={level}
 				/>
-			)}
+			) : null}
 
-			{drankType === "alcoholvrij" && (
+			{drankType === "alcoholvrij" && level === "beginner" && fase === "proeven" ? (
+				<BeginnerWizard
+					steps={lang === "en" ? ALCOHOLVRIJ_STEPS_EN : ALCOHOLVRIJ_STEPS_NL}
+					currentStepId={wizardTab}
+					onStepChange={setWizardTab}
+					lang={lang}
+				>
+					<AlcoholVrijForm
+						ref={alcoholVrijRef}
+						fase="proeven"
+						initialData={initialAlcoholVrijData}
+						persoonlijkeNotitie={fles.persoonlijkeNotitie}
+						score={fles.score}
+						onSave={handleSave}
+						lang={lang}
+						level={level}
+						tab={wizardTab}
+						onTabChange={setWizardTab}
+						hideTabsList
+					/>
+				</BeginnerWizard>
+			) : drankType === "alcoholvrij" && level === "beginner" ? (
+				<AlcoholVrijForm
+					ref={alcoholVrijRef}
+					fase="info"
+					initialData={initialAlcoholVrijData}
+					persoonlijkeNotitie={fles.persoonlijkeNotitie}
+					score={fles.score}
+					onSave={handleSave}
+					lang={lang}
+					level={level}
+				/>
+			) : drankType === "alcoholvrij" ? (
 				<AlcoholVrijForm
 					ref={alcoholVrijRef}
 					initialData={initialAlcoholVrijData}
@@ -389,8 +529,9 @@ export function BottleTasting({
 					score={fles.score}
 					onSave={handleSave}
 					lang={lang}
+					level={level}
 				/>
-			)}
+			) : null}
 
 			{(drankType === "bier" ||
 				drankType === "sake" ||
@@ -403,11 +544,12 @@ export function BottleTasting({
 					score={fles.score}
 					onSave={handleSave}
 					lang={lang}
+					level={level}
 				/>
 			)}
 
 			{/* Volgende button for info fase (wijn/champagne) */}
-			{isTweeFase(drankType) && fase === "info" && (
+			{useTwoFase(drankType, level) && fase === "info" && (
 				<div style={{ marginTop: "1.5rem" }}>
 					<Button
 						style={{ width: "100%" }}
@@ -416,6 +558,52 @@ export function BottleTasting({
 					>
 						{t.volgende}
 					</Button>
+				</div>
+			)}
+
+			{/* Switch-link banner: beginner → gevorderd */}
+			{level === "beginner" && fase === "proeven" && (
+				<div
+					style={{
+						marginTop: "1.5rem",
+						padding: "0.75rem 0.9rem",
+						background: "var(--color-surface)",
+						border: "2px dashed var(--color-border)",
+						fontFamily: "var(--font-body)",
+						fontSize: "0.82rem",
+						color: "var(--color-gray)",
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						gap: "0.75rem",
+						flexWrap: "wrap",
+					}}
+				>
+					<span>
+						{lang === "en"
+							? "Want more fields?"
+							: "Wil je meer velden?"}
+					</span>
+					<button
+						type="button"
+						onClick={() => setLevel("gevorderd")}
+						style={{
+							background: "none",
+							border: "none",
+							padding: 0,
+							color: "var(--color-primary)",
+							fontFamily: "inherit",
+							fontWeight: 600,
+							fontSize: "inherit",
+							textDecoration: "underline",
+							textUnderlineOffset: "3px",
+							cursor: "pointer",
+						}}
+					>
+						{lang === "en"
+							? "→ Switch to advanced"
+							: "→ Stap over naar gevorderd"}
+					</button>
 				</div>
 			)}
 		</div>

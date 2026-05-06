@@ -359,10 +359,9 @@ const CONTENT = {
 		wijnTitle: "Tasting methodology",
 		wijnP1: (
 			<>
-				The wine form follows a{" "}
-				<strong>structured tasting method</strong> based on appearance, nose,
-				palate and conclusions. Ideal for structured learning or recording
-				notes you can compare later.
+				The wine form follows a <strong>structured tasting method</strong> based
+				on appearance, nose, palate and conclusions. Ideal for structured
+				learning or recording notes you can compare later.
 			</>
 		),
 		wijnP2: (
