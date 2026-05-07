@@ -1,20 +1,22 @@
 import { X } from "lucide-react";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
-	spiritsAfdronkLengteOpties,
+	spiritsAfdronkLengteOptiesBi,
 	spiritsAromaCategorieen,
-	spiritsComplexiteitOpties,
-	spiritsConditieOpties,
-	spiritsHelderheidOpties,
-	spiritsIntensiteitOpties,
-	spiritsKleurIntensiteitOpties,
-	spiritsKleurOpties,
-	spiritsKwaliteitOpties,
-	spiritsTextuurOpties,
-	spiritsZoetheidOpties,
-	spiritTypeOpties,
+	spiritsComplexiteitOptiesBi,
+	spiritsConditieOptiesBi,
+	spiritsHelderheidOptiesBi,
+	spiritsIntensiteitOptiesBi,
+	spiritsKleurIntensiteitOptiesBi,
+	spiritsKleurOptiesBi,
+	spiritsKwaliteitOptiesBi,
+	spiritsTextuurOptiesBi,
+	spiritsZoetheidOptiesBi,
+	spiritTypeOptiesBi,
 } from "../data/spirits-options";
+import { localizeOpties } from "../data/wine-options";
+import { useTermsLang } from "../lib/terms-lang";
 import { FL, type Lang } from "../lib/form-labels";
 import type { SpiritsProef, SpiritType } from "../types";
 import { createEmptySpiritsTasting } from "../types";
@@ -36,6 +38,11 @@ interface Props {
 	score?: number;
 	onSave: (data: SpiritsProef, notitie?: string, score?: number) => void;
 	lang?: Lang;
+	level?: import("../lib/level").Level;
+	tab?: string;
+	onTabChange?: (tab: string) => void;
+	hideTabsList?: boolean;
+	fase?: "info" | "proeven";
 }
 
 const TABS = ["appearance", "nose", "palate", "conclusions"];
@@ -171,6 +178,11 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 			score: initScore,
 			onSave,
 			lang = "nl",
+			level = "expert",
+			tab: tabProp,
+			onTabChange,
+			hideTabsList = false,
+			fase,
 		},
 		ref,
 	) {
@@ -179,8 +191,23 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 		);
 		const [notitie, setNotitie] = useState(initNotitie || "");
 		const [score, setScore] = useState<number | undefined>(initScore);
-		const [tab, setTab] = useState("appearance");
+		const [internalTab, setInternalTab] = useState("appearance");
+		const tab = tabProp ?? internalTab;
+		const setTab = onTabChange ?? setInternalTab;
 		const L = FL[lang];
+		const [termsLang] = useTermsLang(lang);
+
+		const spiritTypeOpties = useMemo(() => localizeOpties(spiritTypeOptiesBi, termsLang), [termsLang]);
+		const spiritsHelderheidOpties = useMemo(() => localizeOpties(spiritsHelderheidOptiesBi, termsLang), [termsLang]);
+		const spiritsKleurIntensiteitOpties = useMemo(() => localizeOpties(spiritsKleurIntensiteitOptiesBi, termsLang), [termsLang]);
+		const spiritsKleurOpties = useMemo(() => localizeOpties(spiritsKleurOptiesBi, termsLang), [termsLang]);
+		const spiritsConditieOpties = useMemo(() => localizeOpties(spiritsConditieOptiesBi, termsLang), [termsLang]);
+		const spiritsIntensiteitOpties = useMemo(() => localizeOpties(spiritsIntensiteitOptiesBi, termsLang), [termsLang]);
+		const spiritsZoetheidOpties = useMemo(() => localizeOpties(spiritsZoetheidOptiesBi, termsLang), [termsLang]);
+		const spiritsTextuurOpties = useMemo(() => localizeOpties(spiritsTextuurOptiesBi, termsLang), [termsLang]);
+		const spiritsAfdronkLengteOpties = useMemo(() => localizeOpties(spiritsAfdronkLengteOptiesBi, termsLang), [termsLang]);
+		const spiritsComplexiteitOpties = useMemo(() => localizeOpties(spiritsComplexiteitOptiesBi, termsLang), [termsLang]);
+		const spiritsKwaliteitOpties = useMemo(() => localizeOpties(spiritsKwaliteitOptiesBi, termsLang), [termsLang]);
 
 		useImperativeHandle(
 			ref,
@@ -226,8 +253,12 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 		const prevTab = () => setTab(TABS[TABS.indexOf(tab) - 1]);
 		const nextTab = () => setTab(TABS[TABS.indexOf(tab) + 1]);
 
+		const showInfo = fase === undefined || fase === "info";
+		const showProeven = fase === undefined || fase === "proeven";
+
 		return (
 			<div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+				{showInfo && (
 				<Card>
 					<CardContent
 						style={{
@@ -321,14 +352,18 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 						/>
 					</CardContent>
 				</Card>
+				)}
 
+				{showProeven && (
 				<Tabs value={tab} onValueChange={setTab}>
+					{!hideTabsList && (
 					<TabsList>
 						<TabsTrigger value="appearance">{L.uiterlijk}</TabsTrigger>
 						<TabsTrigger value="nose">{L.neus}</TabsTrigger>
 						<TabsTrigger value="palate">{L.gehemelte}</TabsTrigger>
 						<TabsTrigger value="conclusions">{L.conclusies}</TabsTrigger>
 					</TabsList>
+					)}
 
 					<TabsContent value="appearance">
 						<Card>
@@ -342,6 +377,8 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.helderheid}
+									jargonTerm="helderheid"
+									lang={lang}
 									opties={
 										spiritsHelderheidOpties as unknown as {
 											waarde: string;
@@ -361,6 +398,8 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.kleurintensiteit}
+									jargonTerm="kleurintensiteit"
+									lang={lang}
 									opties={
 										spiritsKleurIntensiteitOpties as unknown as {
 											waarde: string;
@@ -380,6 +419,8 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.kleur}
+									jargonTerm="kleur"
+									lang={lang}
 									opties={
 										spiritsKleurOpties as unknown as {
 											waarde: string;
@@ -410,6 +451,8 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.conditie}
+									jargonTerm="conditie"
+									lang={lang}
 									opties={
 										spiritsConditieOpties as unknown as {
 											waarde: string;
@@ -429,6 +472,8 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.intensiteit}
+									jargonTerm="intensiteit"
+									lang={lang}
 									opties={
 										spiritsIntensiteitOpties as unknown as {
 											waarde: string;
@@ -522,9 +567,13 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 											},
 										})
 									}
+									jargonTerm="zoetheid"
+									lang={lang}
 								/>
 								<ButtonGroup
 									label={L.smaakintensiteit}
+									jargonTerm="smaakintensiteit"
+									lang={lang}
 									opties={
 										spiritsIntensiteitOpties as unknown as {
 											waarde: string;
@@ -659,9 +708,13 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 											},
 										})
 									}
+									jargonTerm="afdronk"
+									lang={lang}
 								/>
 								<ButtonGroup
 									label={L.afdronkKarakter}
+									jargonTerm="afdronk"
+									lang={lang}
 									opties={
 										spiritsComplexiteitOpties as unknown as {
 											waarde: string;
@@ -699,6 +752,8 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.kwaliteitsniveau}
+									jargonTerm="kwaliteitsniveau"
+									lang={lang}
 									opties={
 										spiritsKwaliteitOpties as unknown as {
 											waarde: string;
@@ -739,7 +794,9 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 						</Card>
 					</TabsContent>
 				</Tabs>
+				)}
 
+				{showProeven && (
 				<div style={{ display: "flex", gap: "0.5rem" }}>
 					{tab !== "appearance" && (
 						<Button variant="outline" onClick={prevTab} style={{ flex: 1 }}>
@@ -756,6 +813,7 @@ export const SpiritsForm = forwardRef<SpiritsFormHandle, Props>(
 						</Button>
 					)}
 				</div>
+				)}
 			</div>
 		);
 	},

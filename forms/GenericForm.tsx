@@ -11,6 +11,7 @@ import {
 	getZoetheidOpties,
 	type Lang,
 } from "../lib/form-labels";
+import { useTermsLang } from "../lib/terms-lang";
 import type { AnderDrankType, GenericTasting } from "../types";
 import { createEmptyGenericTasting } from "../types";
 import { Button } from "../ui/Button";
@@ -32,6 +33,7 @@ interface Props {
 	score?: number;
 	onSave: (data: GenericTasting, notitie?: string, score?: number) => void;
 	lang?: Lang;
+	level?: import("../lib/level").Level;
 }
 
 function getDrankTypeOpties(lang: Lang) {
@@ -165,6 +167,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 		ref,
 	) {
 		const L = FL[lang];
+		const [termsLang] = useTermsLang(lang);
 		const [data, setData] = useState<GenericTasting>(
 			initialData || { ...createEmptyGenericTasting(), type: drankType },
 		);
@@ -290,7 +293,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 						<ButtonGroup
 							label={L.typeDrank}
 							opties={
-								getDrankTypeOpties(lang) as unknown as {
+								getDrankTypeOpties(termsLang) as unknown as {
 									waarde: string;
 									label: string;
 								}[]
@@ -323,7 +326,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.helderheid}
-									opties={getHelderheidOpties(lang)}
+									opties={getHelderheidOpties(termsLang)}
 									waarde={data.uiterlijk.helderheid}
 									onChange={(v) =>
 										setData({
@@ -393,7 +396,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.intensiteit}
-									opties={getIntensiteitOpties(lang)}
+									opties={getIntensiteitOpties(termsLang)}
 									waarde={data.neus.intensiteit}
 									onChange={(v) =>
 										setData({
@@ -575,7 +578,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.zoetheid}
-									opties={getZoetheidOpties(lang)}
+									opties={getZoetheidOpties(termsLang)}
 									waarde={data.gehemelte.zoetheid}
 									onChange={(v) =>
 										setData({
@@ -589,7 +592,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.zuurgraad}
-									opties={getDrieSchaalOpties(lang)}
+									opties={getDrieSchaalOpties(termsLang)}
 									waarde={data.gehemelte.zuurgraad}
 									onChange={(v) =>
 										setData({
@@ -604,7 +607,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 								{isBier && (
 									<ButtonGroup
 										label={L.bitterheid}
-										opties={getDrieSchaalOpties(lang)}
+										opties={getDrieSchaalOpties(termsLang)}
 										waarde={data.gehemelte.bitterheid || null}
 										onChange={(v) =>
 											setData({
@@ -619,7 +622,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 								)}
 								<ButtonGroup
 									label={L.body}
-									opties={getBodyOpties(lang)}
+									opties={getBodyOpties(termsLang)}
 									waarde={data.gehemelte.body}
 									onChange={(v) =>
 										setData({
@@ -633,7 +636,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.koolzuur}
-									opties={getDrieSchaalOpties(lang)}
+									opties={getDrieSchaalOpties(termsLang)}
 									waarde={data.gehemelte.koolzuur || null}
 									onChange={(v) =>
 										setData({
@@ -690,7 +693,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 								</div>
 								<ButtonGroup
 									label={L.afdronk}
-									opties={getAfdronkOpties(lang)}
+									opties={getAfdronkOpties(termsLang)}
 									waarde={data.gehemelte.afdronk}
 									onChange={(v) =>
 										setData({
@@ -718,7 +721,7 @@ export const GenericForm = forwardRef<GenericFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.kwaliteitsniveau}
-									opties={getKwaliteitOpties(lang)}
+									opties={getKwaliteitOpties(termsLang)}
 									waarde={data.conclusie.kwaliteit}
 									onChange={(v) =>
 										setData({

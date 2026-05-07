@@ -77,8 +77,7 @@ const CONTENT = {
 		civcName: "Champagne-proefformat",
 		civcDesc:
 			"Basis voor het champagneformulier. Parameters als belgrootte, belpersistentie, moussekwaliteit, autolytisch karakter en dosage zijn standaardterminologie binnen de Champagne-wereld.",
-		civcOrg:
-			"Jeroen volgde gevorderde Champagne-trainingen.",
+		civcOrg: "Jeroen volgde gevorderde Champagne-trainingen.",
 
 		bioLabel: "Biodynamische Kalender",
 		bioTitle: "Biodynamische referenties",
@@ -142,8 +141,7 @@ const CONTENT = {
 		civcName: "Champagne tasting format",
 		civcDesc:
 			"Foundation for the champagne form. Parameters such as bubble size, bubble persistence, mousse quality, autolytic character and dosage are standard terminology within the Champagne world.",
-		civcOrg:
-			"Jeroen completed advanced Champagne trainings.",
+		civcOrg: "Jeroen completed advanced Champagne trainings.",
 
 		bioLabel: "Biodynamic Calendar",
 		bioTitle: "Biodynamic References",

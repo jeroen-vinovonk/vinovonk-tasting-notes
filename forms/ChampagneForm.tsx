@@ -2,41 +2,44 @@
 // mousse, bubble size/persistence, autolytic character, dosage classification.
 
 import { Plus, X } from "lucide-react";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
-	autolytischKarakterOpties,
-	belGrootteOpties,
-	belPersistentieOpties,
-	champagneAanvalOpties,
-	champagneAfdronkOpties,
+	autolytischKarakterOptiesBi,
+	belGrootteOptiesBi,
+	belPersistentieOptiesBi,
+	champagneAanvalOptiesBi,
+	champagneAfdronkOptiesBi,
 	champagneAromaCategorieen,
-	champagneBodyOpties,
-	champagneComplexiteitOpties,
-	champagneDrinkbaarheidOpties,
+	champagneBodyOptiesBi,
+	champagneComplexiteitOptiesBi,
+	champagneDrinkbaarheidOptiesBi,
 	champagneDruivenRassen,
-	champagneHelderheidOpties,
-	champagneIntensiteitOpties,
-	champagneKleurOpties,
-	champagneKwaliteitOpties,
-	champagneZoetheidOpties,
-	champagneZuurgraadOpties,
-	classificatieOpties,
-	cuveeTypeOpties,
-	dosageOpties,
-	mousseKwaliteitOpties,
-	oxidatiefKarakterOpties,
-	producerTypeOpties,
-	stijlOpties,
+	champagneHelderheidOptiesBi,
+	champagneIntensiteitOptiesBi,
+	champagneKleurOptiesBi,
+	champagneKwaliteitOptiesBi,
+	champagneZoetheidOptiesBi,
+	champagneZuurgraadOptiesBi,
+	classificatieOptiesBi,
+	cuveeTypeOptiesBi,
+	dosageOptiesBi,
+	mousseKwaliteitOptiesBi,
+	oxidatiefKarakterOptiesBi,
+	producerTypeOptiesBi,
+	stijlOptiesBi,
 	zoekChampagneProducenten,
 	zoekChampagneVillages,
 } from "../data/champagne-options";
+import { localizeOpties } from "../data/wine-options";
+import { useTermsLang } from "../lib/terms-lang";
 import { AutocompleteInput } from "../features/AutocompleteInput";
 import { FL, type Lang } from "../lib/form-labels";
 import type { ChampagneTasting } from "../types";
 import { createEmptyChampagneTasting } from "../types";
 import { Button } from "../ui/Button";
 import { ButtonGroup } from "../ui/ButtonGroup";
+import { JargonTip } from "../ui/JargonTip";
 import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/Tabs";
@@ -54,6 +57,10 @@ interface Props {
 	onSave: (data: ChampagneTasting, notitie?: string, score?: number) => void;
 	fase?: "info" | "proeven";
 	lang?: Lang;
+	level?: import("../lib/level").Level;
+	tab?: string;
+	onTabChange?: (tab: string) => void;
+	hideTabsList?: boolean;
 }
 
 const labelStyle = {
@@ -368,6 +375,10 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 			onSave,
 			fase = "info",
 			lang = "nl",
+			level = "expert",
+			tab: tabProp,
+			onTabChange,
+			hideTabsList = false,
 		},
 		ref,
 	) {
@@ -376,8 +387,33 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 		);
 		const [notitie, setNotitie] = useState(initNotitie ?? "");
 		const [score, setScore] = useState<number | undefined>(initScore);
-		const [tab, setTab] = useState("visueel");
+		const [internalTab, setInternalTab] = useState("visueel");
+		const tab = tabProp ?? internalTab;
+		const setTab = onTabChange ?? setInternalTab;
 		const L = FL[lang];
+		const [termsLang] = useTermsLang(lang);
+
+		const cuveeTypeOpties = useMemo(() => localizeOpties(cuveeTypeOptiesBi, termsLang), [termsLang]);
+		const stijlOpties = useMemo(() => localizeOpties(stijlOptiesBi, termsLang), [termsLang]);
+		const dosageOpties = useMemo(() => localizeOpties(dosageOptiesBi, termsLang), [termsLang]);
+		const producerTypeOpties = useMemo(() => localizeOpties(producerTypeOptiesBi, termsLang), [termsLang]);
+		const classificatieOpties = useMemo(() => localizeOpties(classificatieOptiesBi, termsLang), [termsLang]);
+		const champagneKleurOpties = useMemo(() => localizeOpties(champagneKleurOptiesBi, termsLang), [termsLang]);
+		const belGrootteOpties = useMemo(() => localizeOpties(belGrootteOptiesBi, termsLang), [termsLang]);
+		const belPersistentieOpties = useMemo(() => localizeOpties(belPersistentieOptiesBi, termsLang), [termsLang]);
+		const mousseKwaliteitOpties = useMemo(() => localizeOpties(mousseKwaliteitOptiesBi, termsLang), [termsLang]);
+		const champagneHelderheidOpties = useMemo(() => localizeOpties(champagneHelderheidOptiesBi, termsLang), [termsLang]);
+		const champagneIntensiteitOpties = useMemo(() => localizeOpties(champagneIntensiteitOptiesBi, termsLang), [termsLang]);
+		const autolytischKarakterOpties = useMemo(() => localizeOpties(autolytischKarakterOptiesBi, termsLang), [termsLang]);
+		const oxidatiefKarakterOpties = useMemo(() => localizeOpties(oxidatiefKarakterOptiesBi, termsLang), [termsLang]);
+		const champagneAanvalOpties = useMemo(() => localizeOpties(champagneAanvalOptiesBi, termsLang), [termsLang]);
+		const champagneZoetheidOpties = useMemo(() => localizeOpties(champagneZoetheidOptiesBi, termsLang), [termsLang]);
+		const champagneZuurgraadOpties = useMemo(() => localizeOpties(champagneZuurgraadOptiesBi, termsLang), [termsLang]);
+		const champagneBodyOpties = useMemo(() => localizeOpties(champagneBodyOptiesBi, termsLang), [termsLang]);
+		const champagneAfdronkOpties = useMemo(() => localizeOpties(champagneAfdronkOptiesBi, termsLang), [termsLang]);
+		const champagneComplexiteitOpties = useMemo(() => localizeOpties(champagneComplexiteitOptiesBi, termsLang), [termsLang]);
+		const champagneKwaliteitOpties = useMemo(() => localizeOpties(champagneKwaliteitOptiesBi, termsLang), [termsLang]);
+		const champagneDrinkbaarheidOpties = useMemo(() => localizeOpties(champagneDrinkbaarheidOptiesBi, termsLang), [termsLang]);
 
 		useImperativeHandle(
 			ref,
@@ -573,6 +609,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 							setData({ ...data, dosage: v as typeof data.dosage })
 						}
 						size="sm"
+						jargonTerm="dosage"
+						lang={lang}
 					/>
 					<div
 						style={{
@@ -671,12 +709,14 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 		return (
 			<div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 				<Tabs value={tab} onValueChange={setTab}>
+					{!hideTabsList && (
 					<TabsList>
 						<TabsTrigger value="visueel">{L.uiterlijk}</TabsTrigger>
 						<TabsTrigger value="neus">{L.neus}</TabsTrigger>
 						<TabsTrigger value="mondgevoel">{L.mondgevoel}</TabsTrigger>
 						<TabsTrigger value="conclusie">{L.conclusies}</TabsTrigger>
 					</TabsList>
+					)}
 
 					{/* APPEARANCE */}
 					<TabsContent value="visueel">
@@ -691,6 +731,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.helderheid}
+									jargonTerm="helderheid"
+									lang={lang}
 									opties={
 										champagneHelderheidOpties as unknown as {
 											waarde: string;
@@ -710,6 +752,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.kleur}
+									jargonTerm="kleur"
+									lang={lang}
 									opties={
 										champagneKleurOpties as unknown as {
 											waarde: string;
@@ -731,6 +775,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.belgrootte}
+									jargonTerm="belgrootte"
+									lang={lang}
 									opties={
 										belGrootteOpties as unknown as {
 											waarde: string;
@@ -750,6 +796,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.belpersistentie}
+									jargonTerm="belpersistentie"
+									lang={lang}
 									opties={
 										belPersistentieOpties as unknown as {
 											waarde: string;
@@ -770,6 +818,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.moussekwaliteit}
+									jargonTerm="moussekwaliteit"
+									lang={lang}
 									opties={
 										mousseKwaliteitOpties as unknown as {
 											waarde: string;
@@ -828,7 +878,7 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 										gap: "0.5rem",
 									}}
 								>
-									<span style={{ ...labelStyle, fontStyle: "italic" }}>
+									<span style={labelStyle}>
 										{lang === "en"
 											? "Vibe — first impression"
 											: "Vibe — eerste indruk"}
@@ -847,6 +897,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								</div>
 								<ButtonGroup
 									label={L.intensiteit}
+									jargonTerm="intensiteit"
+									lang={lang}
 									opties={
 										champagneIntensiteitOpties as unknown as {
 											waarde: string;
@@ -873,6 +925,9 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 										}}
 									>
 										{L.autolytischKarakter}
+										{level === "beginner" && (
+											<JargonTip term="autolytisch" lang={lang} />
+										)}
 									</span>
 									<div
 										style={{
@@ -934,6 +989,9 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 										}}
 									>
 										{L.oxidatiefKarakter}
+										{level === "beginner" && (
+											<JargonTip term="oxidatief" lang={lang} />
+										)}
 									</span>
 									<div
 										style={{
@@ -1032,6 +1090,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.aanvalIntrede}
+									jargonTerm="aanval"
+									lang={lang}
 									opties={
 										champagneAanvalOpties as unknown as {
 											waarde: string;
@@ -1068,6 +1128,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 										})
 									}
 									size="sm"
+									jargonTerm="zoetheid"
+									lang={lang}
 								/>
 								<ButtonGroup
 									label={L.zuurgraad}
@@ -1087,9 +1149,13 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 											},
 										})
 									}
+									jargonTerm="zuurgraad"
+									lang={lang}
 								/>
 								<ButtonGroup
 									label="Body"
+									jargonTerm="body"
+									lang={lang}
 									opties={
 										champagneBodyOpties as unknown as {
 											waarde: string;
@@ -1109,6 +1175,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.smaakintensiteit}
+									jargonTerm="smaakintensiteit"
+									lang={lang}
 									opties={
 										champagneIntensiteitOpties as unknown as {
 											waarde: string;
@@ -1150,6 +1218,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								</div>
 								<ButtonGroup
 									label={L.afdronkLengte}
+									jargonTerm="afdronk"
+									lang={lang}
 									opties={
 										champagneAfdronkOpties as unknown as {
 											waarde: string;
@@ -1170,6 +1240,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.afdronkComplexiteit}
+									jargonTerm="afdronkComplexiteit"
+									lang={lang}
 									opties={
 										champagneComplexiteitOpties as unknown as {
 											waarde: string;
@@ -1283,6 +1355,8 @@ export const ChampagneForm = forwardRef<ChampagneFormHandle, Props>(
 								</div>
 								<ButtonGroup
 									label={L.drinkrijpheid}
+									jargonTerm="drinkrijpheid"
+									lang={lang}
 									opties={
 										champagneDrinkbaarheidOpties as unknown as {
 											waarde: string;

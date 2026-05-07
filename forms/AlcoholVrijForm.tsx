@@ -11,6 +11,7 @@ import {
 	getZoetheidOpties,
 	type Lang,
 } from "../lib/form-labels";
+import { useTermsLang } from "../lib/terms-lang";
 import type { AlcoholVrijSubType, AlcoholVrijTasting } from "../types";
 import { createEmptyAlcoholVrijTasting } from "../types";
 import { Button } from "../ui/Button";
@@ -31,6 +32,11 @@ interface Props {
 	score?: number;
 	onSave: (data: AlcoholVrijTasting, notitie?: string, score?: number) => void;
 	lang?: Lang;
+	level?: import("../lib/level").Level;
+	tab?: string;
+	onTabChange?: (tab: string) => void;
+	hideTabsList?: boolean;
+	fase?: "info" | "proeven";
 }
 
 function getSubTypeOpties(lang: Lang) {
@@ -169,6 +175,11 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 			score: initScore,
 			onSave,
 			lang = "nl",
+			level = "expert",
+			tab: tabProp,
+			onTabChange,
+			hideTabsList = false,
+			fase,
 		},
 		ref,
 	) {
@@ -177,9 +188,12 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 		);
 		const [notitie, setNotitie] = useState(initNotitie || "");
 		const [score, setScore] = useState<number | undefined>(initScore);
-		const [tab, setTab] = useState("appearance");
+		const [internalTab, setInternalTab] = useState("appearance");
+		const tab = tabProp ?? internalTab;
+		const setTab = onTabChange ?? setInternalTab;
 		const [customAroma, setCustomAroma] = useState("");
 		const L = FL[lang];
+		const [termsLang] = useTermsLang(lang);
 
 		useImperativeHandle(
 			ref,
@@ -199,8 +213,13 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 		const prevTab = () => setTab(TABS[TABS.indexOf(tab) - 1]);
 		const nextTab = () => setTab(TABS[TABS.indexOf(tab) + 1]);
 
+		const showInfo = fase === undefined || fase === "info";
+		const showProeven = fase === undefined || fase === "proeven";
+
 		return (
 			<div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+				{showInfo && (
+				<>
 				{/* Meta */}
 				<Card>
 					<CardContent
@@ -296,7 +315,7 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 						</div>
 						<ButtonGroup
 							label={L.typeAlcoholvrij}
-							opties={getSubTypeOpties(lang)}
+							opties={getSubTypeOpties(termsLang)}
 							waarde={data.subType}
 							onChange={(v) =>
 								setData({ ...data, subType: v as AlcoholVrijSubType })
@@ -315,15 +334,19 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 						)}
 					</CardContent>
 				</Card>
+				</>
+				)}
 
-				{/* Tabs */}
+				{showProeven && (
 				<Tabs value={tab} onValueChange={setTab}>
+					{!hideTabsList && (
 					<TabsList>
 						<TabsTrigger value="appearance">{L.uiterlijk}</TabsTrigger>
 						<TabsTrigger value="nose">{L.neus}</TabsTrigger>
 						<TabsTrigger value="palate">{L.gehemelte}</TabsTrigger>
 						<TabsTrigger value="conclusions">{L.conclusies}</TabsTrigger>
 					</TabsList>
+					)}
 
 					<TabsContent value="appearance">
 						<Card>
@@ -337,7 +360,9 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.helderheid}
-									opties={getHelderheidOpties(lang)}
+									jargonTerm="helderheid"
+									lang={lang}
+									opties={getHelderheidOpties(termsLang)}
 									waarde={data.uiterlijk.helderheid}
 									onChange={(v) =>
 										setData({
@@ -395,7 +420,9 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.intensiteit}
-									opties={getIntensiteitOpties(lang)}
+									jargonTerm="intensiteit"
+									lang={lang}
+									opties={getIntensiteitOpties(termsLang)}
 									waarde={data.neus.intensiteit}
 									onChange={(v) =>
 										setData({
@@ -577,7 +604,7 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.zoetheid}
-									opties={getZoetheidOpties(lang)}
+									opties={getZoetheidOpties(termsLang)}
 									waarde={data.gehemelte.zoetheid}
 									onChange={(v) =>
 										setData({
@@ -588,10 +615,12 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 											},
 										})
 									}
+									jargonTerm="zoetheid"
+									lang={lang}
 								/>
 								<ButtonGroup
 									label={L.zuurgraad}
-									opties={getDrieSchaalOpties(lang)}
+									opties={getDrieSchaalOpties(termsLang)}
 									waarde={data.gehemelte.zuurgraad}
 									onChange={(v) =>
 										setData({
@@ -602,11 +631,13 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 											},
 										})
 									}
+									jargonTerm="zuurgraad"
+									lang={lang}
 								/>
 								{isProxyWijn && (
 									<ButtonGroup
 										label={L.tannine}
-										opties={getDrieSchaalOpties(lang)}
+										opties={getDrieSchaalOpties(termsLang)}
 										waarde={data.gehemelte.tannine || null}
 										onChange={(v) =>
 											setData({
@@ -617,11 +648,15 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 												},
 											})
 										}
+										jargonTerm="tannine"
+										lang={lang}
 									/>
 								)}
 								<ButtonGroup
 									label="Body"
-									opties={getBodyOpties(lang)}
+									jargonTerm="body"
+									lang={lang}
+									opties={getBodyOpties(termsLang)}
 									waarde={data.gehemelte.body}
 									onChange={(v) =>
 										setData({
@@ -635,7 +670,9 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.bitterheid}
-									opties={getDrieSchaalOpties(lang)}
+									jargonTerm="bitterheid"
+									lang={lang}
+									opties={getDrieSchaalOpties(termsLang)}
 									waarde={data.gehemelte.bitterheid || null}
 									onChange={(v) =>
 										setData({
@@ -649,7 +686,9 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 								/>
 								<ButtonGroup
 									label={L.koolzuur}
-									opties={getDrieSchaalOpties(lang)}
+									jargonTerm="koolzuur"
+									lang={lang}
+									opties={getDrieSchaalOpties(termsLang)}
 									waarde={data.gehemelte.koolzuur || null}
 									onChange={(v) =>
 										setData({
@@ -706,7 +745,9 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 								</div>
 								<ButtonGroup
 									label={L.afdronk}
-									opties={getAfdronkOpties(lang)}
+									jargonTerm="afdronk"
+									lang={lang}
+									opties={getAfdronkOpties(termsLang)}
 									waarde={data.gehemelte.afdronk}
 									onChange={(v) =>
 										setData({
@@ -734,7 +775,9 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 							>
 								<ButtonGroup
 									label={L.kwaliteitsniveau}
-									opties={getKwaliteitOpties(lang)}
+									jargonTerm="kwaliteitsniveau"
+									lang={lang}
+									opties={getKwaliteitOpties(termsLang)}
 									waarde={data.conclusie.kwaliteit}
 									onChange={(v) =>
 										setData({
@@ -785,8 +828,9 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 						</Card>
 					</TabsContent>
 				</Tabs>
+				)}
 
-				{/* Navigation */}
+				{showProeven && (
 				<div style={{ display: "flex", gap: "0.5rem" }}>
 					{tab !== "appearance" && (
 						<Button variant="outline" onClick={prevTab} style={{ flex: 1 }}>
@@ -806,6 +850,7 @@ export const AlcoholVrijForm = forwardRef<AlcoholVrijFormHandle, Props>(
 						</Button>
 					)}
 				</div>
+				)}
 			</div>
 		);
 	},

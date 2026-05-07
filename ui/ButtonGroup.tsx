@@ -1,6 +1,9 @@
 // Radio-stijl knoppengroep — vervangt shadcn ToggleGroup
 // Interface matcht Next.js app (opties/waarde) voor directe port van forms
 import type { ReactNode } from "react";
+import type { Lang } from "../lib/form-labels";
+import { useLevel } from "../lib/level";
+import { JargonTip } from "./JargonTip";
 
 export interface ButtonGroupOptie<T extends string = string> {
 	waarde: T;
@@ -17,6 +20,8 @@ interface ButtonGroupProps<T extends string = string> {
 	size?: "sm" | "md";
 	showColor?: boolean;
 	wrap?: boolean;
+	jargonTerm?: string;
+	lang?: Lang;
 }
 
 export function ButtonGroup<T extends string>({
@@ -27,10 +32,14 @@ export function ButtonGroup<T extends string>({
 	size = "md",
 	showColor = false,
 	wrap = true,
+	jargonTerm,
+	lang = "nl",
 }: ButtonGroupProps<T>) {
+	const [level] = useLevel();
 	const labelId = label
 		? label.replace(/\s+/g, "-").toLowerCase() + "-label"
 		: undefined;
+	const showJargon = level === "beginner" && !!jargonTerm;
 
 	return (
 		<div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
@@ -44,9 +53,12 @@ export function ButtonGroup<T extends string>({
 						letterSpacing: "0.12em",
 						textTransform: "uppercase",
 						color: "var(--color-on-surface)",
+						display: "inline-flex",
+						alignItems: "center",
 					}}
 				>
 					{label}
+					{showJargon && jargonTerm && <JargonTip term={jargonTerm} lang={lang} />}
 				</span>
 			)}
 			<div

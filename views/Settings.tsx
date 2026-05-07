@@ -1,10 +1,12 @@
-import { Database, Download, Trash2, Upload } from "lucide-react";
+import { Database, Download, Globe, Sliders, Trash2, Upload } from "lucide-react";
 import { useRef } from "react";
 import { toast } from "sonner";
 import { clearAllData, exportAllData, importData } from "../lib/storage";
+import { useTermsLang } from "../lib/terms-lang";
 import { navigate } from "../router";
 import { Button } from "../ui/Button";
 import { Card, CardContent } from "../ui/Card";
+import { LevelSelector } from "../ui/LevelSelector";
 
 interface SettingsProps {
 	lang?: "nl" | "en";
@@ -14,6 +16,12 @@ const T = {
 	nl: {
 		back: "Terug",
 		titel: "Instellingen",
+		niveauSectie: "Proefniveau",
+		niveauUitleg:
+			"Bepaalt hoeveel velden en uitleg de app toont. Wissel altijd: bestaande proefnotities blijven volledig bewaard.",
+		termsSectie: "Termen-taal",
+		termsNL: "NL",
+		termsEN: "EN",
 		dataSectie: "Data beheer",
 		dataUitleg:
 			"Al je proefnotities zijn opgeslagen in je browser (localStorage). Exporteer regelmatig als backup.",
@@ -32,6 +40,12 @@ const T = {
 	en: {
 		back: "Back",
 		titel: "Settings",
+		niveauSectie: "Tasting level",
+		niveauUitleg:
+			"Controls how many fields and explanations the app shows. Switch any time — your existing notes stay intact.",
+		termsSectie: "Term language",
+		termsNL: "NL",
+		termsEN: "EN",
 		dataSectie: "Data management",
 		dataUitleg:
 			"All your tasting notes are stored in your browser (localStorage). Export regularly as backup.",
@@ -128,6 +142,8 @@ export function Settings({ lang = "nl" }: SettingsProps) {
 		navigate("/");
 	};
 
+	const [termsLang, setTermsLangState] = useTermsLang(lang);
+
 	return (
 		<div
 			style={{
@@ -151,6 +167,76 @@ export function Settings({ lang = "nl" }: SettingsProps) {
 			>
 				{t.titel}
 			</h2>
+
+			<Card style={{ marginBottom: "1.5rem" }}>
+				<CardContent
+					style={{
+						paddingTop: "1rem",
+						paddingBottom: "1rem",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						gap: "1rem",
+						flexWrap: "wrap",
+					}}
+				>
+					<div style={sectionHeaderStyle}>
+						<Sliders size={15} />
+						{t.niveauSectie}
+					</div>
+					<LevelSelector lang={lang} compact />
+				</CardContent>
+			</Card>
+
+			<Card style={{ marginBottom: "1.5rem" }}>
+				<CardContent
+					style={{
+						paddingTop: "1rem",
+						paddingBottom: "1rem",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						gap: "1rem",
+						flexWrap: "wrap",
+					}}
+				>
+					<div style={sectionHeaderStyle}>
+						<Globe size={15} />
+						{t.termsSectie}
+					</div>
+					<div style={{ display: "flex", gap: "2px" }}>
+						{(["nl", "en"] as const).map((tl) => {
+							const sel = termsLang === tl;
+							return (
+								<button
+									key={tl}
+									type="button"
+									onClick={() => setTermsLangState(tl)}
+									aria-pressed={sel}
+									style={{
+										fontFamily: "var(--font-body)",
+										fontSize: "0.7rem",
+										fontWeight: 700,
+										letterSpacing: "0.1em",
+										padding: "0.45rem 0.85rem",
+										minHeight: "36px",
+										background: sel
+											? "var(--color-on-surface)"
+											: "var(--color-white)",
+										color: sel
+											? "var(--color-background)"
+											: "var(--color-on-surface)",
+										border: `2px solid ${sel ? "var(--color-on-surface)" : "var(--color-border)"}`,
+										cursor: "pointer",
+									}}
+								>
+									{tl === "nl" ? t.termsNL : t.termsEN}
+								</button>
+							);
+						})}
+					</div>
+				</CardContent>
+			</Card>
 
 			<Card>
 				<CardContent
