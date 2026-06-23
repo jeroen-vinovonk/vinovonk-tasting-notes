@@ -625,6 +625,9 @@ export interface TastingNote {
 	tastingData: TastingData;
 	persoonlijkeNotitie?: string;
 	score?: number; // 1-10
+	// Snelle gut-check (live-modus): simpeler dan een cijfer.
+	lekker?: "nee" | "gaatwel" | "ja";
+	zouKopen?: "nee" | "misschien" | "ja";
 	createdAt: string;
 	updatedAt: string;
 }
@@ -639,6 +642,8 @@ export interface TastingSession {
 	updatedAt: string;
 	isArchived?: boolean;
 	biodynamischDagType?: "fruit" | "bloem" | "blad" | "wortel";
+	// Vooraf gedeelde line-up (gastheer → QR/link). Pre-vult wijnnamen in live-modus.
+	flightWines?: string[];
 }
 
 export interface SessionSummary {

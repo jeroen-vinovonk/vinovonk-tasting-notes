@@ -288,13 +288,35 @@ export function SessionDetail({ id, lang = "nl" }: SessionDetailProps) {
 				}}
 			>
 				<Button
-					onClick={handleAddFles}
+					onClick={() => navigate(`/sessie/${id}/live`)}
 					variant="primary"
+					size="md"
+					style={{ flex: 1, minWidth: "160px", justifyContent: "center" }}
+				>
+					⚡ {lang === "en" ? "Live tasting" : "Live proeven"}
+				</Button>
+
+				<Button
+					onClick={handleAddFles}
+					variant="outline"
 					size="md"
 					style={{ flex: 1, minWidth: "160px", justifyContent: "center" }}
 				>
 					<PlusCircle size={16} /> {t.toevoegen}
 				</Button>
+
+				{/* Overzicht / recap — alleen tonen als er flessen zijn */}
+				{sessie && sessie.flessen.length > 0 && (
+					<Button
+						onClick={() => navigate(`/sessie/${id}/overzicht`)}
+						variant="outline"
+						size="md"
+						style={{ justifyContent: "center" }}
+					>
+						★ {lang === "en" ? "Overview" : "Overzicht"}
+					</Button>
+				)}
+
 
 				{/* Verwijder sessie — met bevestigingsdialog */}
 				<Dialog>

@@ -21,6 +21,8 @@ const tastingNoteSchema = z.object({
 	transcript: z.string().optional(),
 	persoonlijkeNotitie: z.string().optional(),
 	score: z.number().min(1).max(10).optional(),
+	lekker: z.enum(["nee", "gaatwel", "ja"]).optional(),
+	zouKopen: z.enum(["nee", "misschien", "ja"]).optional(),
 });
 
 export const tastingSessionSchema = z.object({
@@ -33,6 +35,7 @@ export const tastingSessionSchema = z.object({
 	updatedAt: z.string(),
 	isArchived: z.boolean().optional(),
 	biodynamischDagType: z.enum(["fruit", "bloem", "blad", "wortel"]).optional(),
+	flightWines: z.array(z.string()).optional(),
 });
 
 export const importPayloadSchema = z.object({

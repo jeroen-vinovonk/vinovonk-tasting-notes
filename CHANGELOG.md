@@ -1,5 +1,24 @@
 # Changelog
 
+## [Unreleased] — 2026-06-23 — Live tasting mode, QR flights, session overview, PWA
+
+Fast tap-only tasting plus sharing, recap and offline install.
+
+### Added
+
+- **Live tasting mode** (`views/LiveSession.tsx`) — one tap-only card per wine, following the tasting order: Look (type · clarity · intensity · colour), Smell (intensity · aroma tiles), Taste (flavour tiles · sweetness · acidity · tannin · alcohol · body · finish), Note, Conclusion. The conclusion uses a quick gut-check (Do I like it? / Would I buy it?) with an optional 1–10 score. Every field optional. **Previous wine** button and left/right swipe reopen a saved wine to correct it (updates in place, no duplicate). Entry from the dashboard (⚡) and from a session.
+- **Share a flight (QR)** (`views/FlightBuilder.tsx`, `views/FlightImport.tsx`, `lib/flight.ts`) — a host enters a line-up and gets a QR code + shareable link with the whole line-up encoded in the URL (base64url, no server). Guests scan → a local session is created with the wines pre-filled → they drop into Live mode and only score.
+- **Session overview** (`views/SessionRecap.tsx`) — a recap with a "would buy" shortlist on top and a ranking sorted by buy verdict → score → preference. Copy a plain-text summary, share via the native share sheet, or download the session as a JSON backup (`exportSession()` in `lib/storage.ts`).
+- **PWA** (`standalone/public/manifest.webmanifest`, `standalone/public/sw.js`) — installable home-screen app with an icon and offline support via a service worker (cache-first for assets, network-first navigations with an offline fallback to the cached shell).
+- **Gut-check verdicts** — `lekker` and `zouKopen` fields on `TastingNote` (and schema), a simpler alternative to a formal quality score.
+- **`tilesLabel` prop** on `AromaPicker` so the taste step shows "Flavour categories" instead of "Aroma categories".
+
+### Files added
+
+- `views/LiveSession.tsx`, `views/FlightBuilder.tsx`, `views/FlightImport.tsx`, `views/SessionRecap.tsx`
+- `lib/flight.ts`
+- `standalone/public/manifest.webmanifest`, `standalone/public/sw.js`, icons
+
 ## [Unreleased] — 2026-05-06 — Tasting levels, term language, dark mode
 
 Three-tier tasting flow plus a term-language toggle.

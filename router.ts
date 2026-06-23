@@ -12,12 +12,17 @@ export interface Route {
 const ROUTES = [
 	"/sessie/:id/fles/nieuw",
 	"/sessie/:id/fles/:flesId",
+	"/sessie/:id/overzicht",
+	"/sessie/:id/live",
 	"/sessie/nieuw",
 	"/sessie/:id",
+	"/flight/nieuw",
+	"/flight/:payload",
 	"/archief",
 	"/instellingen",
 	"/biodynamisch",
 	"/hoe-gebruik-je-dit",
+	"/bronnen",
 	"/over",
 	"/",
 ];

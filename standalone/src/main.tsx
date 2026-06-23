@@ -20,3 +20,12 @@ createRoot(document.getElementById("root")!).render(
 		<TastingApp lang={lang} />
 	</StrictMode>,
 );
+
+// PWA: register the service worker (installable + offline).
+if ("serviceWorker" in navigator) {
+	window.addEventListener("load", () => {
+		navigator.serviceWorker.register("/sw.js").catch(() => {
+			/* offline or unsupported: app still works online */
+		});
+	});
+}
