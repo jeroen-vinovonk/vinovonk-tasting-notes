@@ -1,4 +1,5 @@
 import { navigate } from "../router";
+import { BackButton } from "../ui/BackButton";
 
 interface Props {
 	lang?: "nl" | "en";
@@ -202,25 +203,7 @@ export function BronnenView({ lang = "nl" }: Props) {
 					paddingBottom: "1.5rem",
 				}}
 			>
-				<button
-					onClick={() => navigate("/")}
-					style={{
-						background: "none",
-						border: "none",
-						cursor: "pointer",
-						fontFamily: "var(--font-body)",
-						fontSize: "0.78rem",
-						fontWeight: 700,
-						letterSpacing: "0.08em",
-						textTransform: "uppercase",
-						color: "var(--color-gray)",
-						padding: 0,
-						marginBottom: "1rem",
-						display: "block",
-					}}
-				>
-					{C.back}
-				</button>
+				<BackButton style={{ marginBottom: "1rem" }}>{C.back}</BackButton>
 				<span style={labelStyle}>{C.label}</span>
 				<h1
 					style={{

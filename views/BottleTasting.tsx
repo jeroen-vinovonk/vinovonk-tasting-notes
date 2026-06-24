@@ -43,6 +43,7 @@ import {
 	createEmptySpiritsTasting,
 	createEmptyWineTasting,
 } from "../types";
+import { BackButton } from "../ui/BackButton";
 import { Button } from "../ui/Button";
 import { Card, CardContent } from "../ui/Card";
 import { NiveauChooser } from "./NiveauChooser";
@@ -95,22 +96,6 @@ const useTwoFase = (t: DrankType, level: string) =>
 	isTweeFase(t) ||
 	(level === "beginner" && (t === "spirit" || t === "alcoholvrij"));
 
-const backBtnStyle: React.CSSProperties = {
-	background: "none",
-	border: "none",
-	cursor: "pointer",
-	fontFamily: "var(--font-body)",
-	fontSize: "0.72rem",
-	fontWeight: 700,
-	letterSpacing: "0.1em",
-	textTransform: "uppercase",
-	color: "var(--color-gray)",
-	marginBottom: "1.5rem",
-	padding: 0,
-	display: "flex",
-	alignItems: "center",
-	gap: "0.25rem",
-};
 
 const pillStyle = (sel: boolean): React.CSSProperties => ({
 	fontFamily: "var(--font-body)",
@@ -269,12 +254,12 @@ export function BottleTasting({
 					padding: "2rem var(--gap)",
 				}}
 			>
-				<button
+				<BackButton
 					onClick={() => navigate(`/sessie/${sessionId}`)}
-					style={backBtnStyle}
+					style={{ marginBottom: "1.5rem" }}
 				>
 					← {t.back}
-				</button>
+				</BackButton>
 				<p
 					style={{ fontFamily: "var(--font-body)", color: "var(--color-gray)" }}
 				>
@@ -309,13 +294,12 @@ export function BottleTasting({
 		>
 			{/* Back + Print row */}
 			<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-				<button
-					type="button"
+				<BackButton
 					onClick={() => navigate(`/sessie/${sessionId}`)}
-					style={backBtnStyle}
+					style={{ marginBottom: "1.5rem" }}
 				>
 					← {t.back}
-				</button>
+				</BackButton>
 			</div>
 
 			{/* DrankType selector */}

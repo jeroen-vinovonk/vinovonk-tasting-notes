@@ -18,6 +18,8 @@ const BASE: CSSProperties = {
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
+	// WCAG 2.2 AA 2.5.8: target minstens 24px hoog.
+	minHeight: "24px",
 	gap: "0.5rem",
 	fontFamily: "var(--font-body)",
 	fontWeight: 700,

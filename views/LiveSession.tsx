@@ -20,6 +20,7 @@ import {
 } from "../lib/form-labels";
 import { addFles, getSession, updateFles } from "../lib/storage";
 import { navigate } from "../router";
+import { BackButton } from "../ui/BackButton";
 import {
 	type AfdronkLengte,
 	type Body,
@@ -408,9 +409,12 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 				}}
 			>
 				<p style={{ fontSize: "1.1rem" }}>{t.nietGevonden}</p>
-				<button type="button" onClick={() => navigate("/")} style={linkBtn}>
+				<BackButton
+					onClick={() => navigate("/")}
+					style={{ color: "var(--color-primary)" }}
+				>
 					← Dashboard
-				</button>
+				</BackButton>
 			</div>
 		);
 	}
@@ -440,13 +444,12 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 					marginBottom: "1rem",
 				}}
 			>
-				<button
-					type="button"
+				<BackButton
 					onClick={() => navigate(`/sessie/${sessionId}`)}
-					style={linkBtn}
+					style={{ color: "var(--color-primary)" }}
 				>
 					<ArrowLeft size={14} /> {t.terug}
-				</button>
+				</BackButton>
 				<span
 					style={{
 						fontFamily: "var(--font-body)",
@@ -955,17 +958,3 @@ const actionBtn = {
 	cursor: "pointer",
 };
 
-const linkBtn = {
-	display: "inline-flex",
-	alignItems: "center",
-	gap: "0.3rem",
-	background: "none",
-	border: "none",
-	cursor: "pointer",
-	fontFamily: "var(--font-body)",
-	fontSize: "0.78rem",
-	fontWeight: 700,
-	letterSpacing: "0.06em",
-	color: "var(--color-primary)",
-	padding: 0,
-};

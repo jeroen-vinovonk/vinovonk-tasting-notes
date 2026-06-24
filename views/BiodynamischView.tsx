@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import type { BiodynamischDagType, MaanFase } from "../lib/biodynamisch";
 import { getBiodynamischInfo, getMaanFaseInfo } from "../lib/biodynamisch";
 import { navigate } from "../router";
+import { BackButton } from "../ui/BackButton";
 import { Card, CardContent } from "../ui/Card";
 
 interface BiodynamischViewProps {
@@ -265,20 +266,6 @@ export function BiodynamischView({ lang = "nl" }: BiodynamischViewProps) {
 		});
 	}, [vandaag]);
 
-	const backBtnStyle: React.CSSProperties = {
-		background: "none",
-		border: "none",
-		cursor: "pointer",
-		fontFamily: "var(--font-body)",
-		fontSize: "0.72rem",
-		fontWeight: 700,
-		letterSpacing: "0.1em",
-		textTransform: "uppercase",
-		color: "var(--color-gray)",
-		marginBottom: "1.5rem",
-		padding: 0,
-	};
-
 	const dagtypeLabel = (dt: BiodynamischDagType) =>
 		lang === "en"
 			? DAGTYPE_LABEL_EN[dt]
@@ -292,9 +279,9 @@ export function BiodynamischView({ lang = "nl" }: BiodynamischViewProps) {
 				padding: "2rem var(--gap)",
 			}}
 		>
-			<button onClick={() => navigate("/")} style={backBtnStyle}>
+			<BackButton onClick={() => navigate("/")} style={{ marginBottom: "1.5rem" }}>
 				← {lang === "en" ? "Dashboard" : "Dashboard"}
-			</button>
+			</BackButton>
 
 			<h2
 				style={{

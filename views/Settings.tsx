@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { clearAllData, exportAllData, importData } from "../lib/storage";
 import { useTermsLang } from "../lib/terms-lang";
 import { navigate } from "../router";
+import { BackButton } from "../ui/BackButton";
 import { Button } from "../ui/Button";
 import { Card, CardContent } from "../ui/Card";
 import { LevelSelector } from "../ui/LevelSelector";
@@ -86,19 +87,6 @@ const sectionHeaderStyle: React.CSSProperties = {
 	gap: "0.5rem",
 };
 
-const backBtnStyle: React.CSSProperties = {
-	background: "none",
-	border: "none",
-	cursor: "pointer",
-	fontFamily: "var(--font-body)",
-	fontSize: "0.72rem",
-	fontWeight: 700,
-	letterSpacing: "0.1em",
-	textTransform: "uppercase",
-	color: "var(--color-gray)",
-	marginBottom: "1.5rem",
-	padding: 0,
-};
 
 export function Settings({ lang = "nl" }: SettingsProps) {
 	const t = T[lang];
@@ -152,9 +140,7 @@ export function Settings({ lang = "nl" }: SettingsProps) {
 				padding: "2rem var(--gap)",
 			}}
 		>
-			<button onClick={() => navigate("/")} style={backBtnStyle}>
-				← {t.back}
-			</button>
+			<BackButton style={{ marginBottom: "1.5rem" }}>← {t.back}</BackButton>
 
 			<h2
 				style={{

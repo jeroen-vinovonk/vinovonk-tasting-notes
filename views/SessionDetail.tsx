@@ -14,6 +14,7 @@ import { BiodynamischBadge } from "../features/BiodynamischBadge";
 import { addFles, deleteFles, deleteSession, getSession } from "../lib/storage";
 import { navigate } from "../router";
 import type { TastingSession } from "../types";
+import { BackButton } from "../ui/BackButton";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card, CardContent } from "../ui/Card";
@@ -210,27 +211,9 @@ export function SessionDetail({ id, lang = "nl" }: SessionDetailProps) {
 			}}
 		>
 			{/* Back nav */}
-			<button
-				onClick={() => navigate("/")}
-				style={{
-					display: "flex",
-					alignItems: "center",
-					gap: "0.375rem",
-					background: "none",
-					border: "none",
-					cursor: "pointer",
-					fontFamily: "var(--font-body)",
-					fontSize: "0.72rem",
-					fontWeight: 700,
-					letterSpacing: "0.1em",
-					textTransform: "uppercase",
-					color: "var(--color-gray)",
-					marginBottom: "1.5rem",
-					padding: 0,
-				}}
-			>
+			<BackButton style={{ marginBottom: "1.5rem" }}>
 				<ArrowLeft size={14} /> {t.back}
-			</button>
+			</BackButton>
 
 			{/* Header */}
 			<div

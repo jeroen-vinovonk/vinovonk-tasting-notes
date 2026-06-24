@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { exportAllData, getSession, getSessions } from "../lib/storage";
 import { navigate } from "../router";
 import type { DrankType, TastingNote } from "../types";
+import { BackButton } from "../ui/BackButton";
 import { Badge } from "../ui/Badge";
 import { Card, CardContent } from "../ui/Card";
 import { Input } from "../ui/Input";
@@ -192,20 +193,6 @@ export function Archive({ lang = "nl" }: ArchiveProps) {
 		downloadJson(`vinovonk-export-${datum}.json`, data);
 	};
 
-	const backBtnStyle: React.CSSProperties = {
-		background: "none",
-		border: "none",
-		cursor: "pointer",
-		fontFamily: "var(--font-body)",
-		fontSize: "0.72rem",
-		fontWeight: 700,
-		letterSpacing: "0.1em",
-		textTransform: "uppercase",
-		color: "var(--color-gray)",
-		marginBottom: "1.5rem",
-		padding: 0,
-	};
-
 	return (
 		<div
 			style={{
@@ -214,9 +201,7 @@ export function Archive({ lang = "nl" }: ArchiveProps) {
 				padding: "2rem var(--gap)",
 			}}
 		>
-			<button onClick={() => navigate("/")} style={backBtnStyle}>
-				← {t.back}
-			</button>
+			<BackButton style={{ marginBottom: "1.5rem" }}>← {t.back}</BackButton>
 
 			<div
 				style={{
