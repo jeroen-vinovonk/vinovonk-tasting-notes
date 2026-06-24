@@ -1,5 +1,6 @@
 import type { Lang } from "../lib/form-labels";
 import type { Level } from "../lib/level";
+import { BackButton } from "../ui/BackButton";
 import { Button } from "../ui/Button";
 
 interface Props {
@@ -80,24 +81,12 @@ export function NiveauChooser({
 				padding: "2rem var(--gap)",
 			}}
 		>
-			<button
+			<BackButton
 				onClick={onBack}
-				style={{
-					background: "none",
-					border: "none",
-					padding: "0.5rem 0",
-					marginBottom: "1.5rem",
-					fontFamily: "var(--font-body)",
-					fontWeight: 700,
-					fontSize: "0.78rem",
-					letterSpacing: "0.1em",
-					textTransform: "uppercase",
-					color: "inherit",
-					cursor: "pointer",
-				}}
+				style={{ marginBottom: "1.5rem", color: "inherit" }}
 			>
 				{c.back}
-			</button>
+			</BackButton>
 
 			<h1
 				style={{

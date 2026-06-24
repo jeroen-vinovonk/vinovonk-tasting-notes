@@ -9,6 +9,7 @@ import {
 } from "../lib/flight";
 import { createSession, updateSession } from "../lib/storage";
 import { navigate } from "../router";
+import { BackButton } from "../ui/BackButton";
 import { Button } from "../ui/Button";
 
 interface FlightBuilderProps {
@@ -160,26 +161,11 @@ export function FlightBuilder({ lang = "nl" }: FlightBuilderProps) {
 				fontFamily: "var(--font-body)",
 			}}
 		>
-			<button
-				type="button"
-				onClick={() => navigate("/")}
-				style={{
-					display: "inline-flex",
-					alignItems: "center",
-					gap: "0.3rem",
-					background: "none",
-					border: "none",
-					cursor: "pointer",
-					fontFamily: "var(--font-body)",
-					fontSize: "0.78rem",
-					fontWeight: 700,
-					color: "var(--color-primary)",
-					padding: 0,
-					marginBottom: "1rem",
-				}}
+			<BackButton
+				style={{ marginBottom: "1rem", color: "var(--color-primary)" }}
 			>
 				<ArrowLeft size={14} /> {t.terug}
-			</button>
+			</BackButton>
 
 			<span
 				style={{

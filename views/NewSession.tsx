@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { createSession } from "../lib/storage";
 import { navigate } from "../router";
+import { BackButton } from "../ui/BackButton";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader } from "../ui/Card";
 import { Input } from "../ui/Input";
@@ -67,24 +68,7 @@ export function NewSession({ lang = "nl" }: NewSessionProps) {
 				padding: "2rem var(--gap)",
 			}}
 		>
-			<button
-				onClick={() => navigate("/")}
-				style={{
-					background: "none",
-					border: "none",
-					cursor: "pointer",
-					fontFamily: "var(--font-body)",
-					fontSize: "0.72rem",
-					fontWeight: 700,
-					letterSpacing: "0.1em",
-					textTransform: "uppercase",
-					color: "var(--color-gray)",
-					marginBottom: "1.5rem",
-					padding: 0,
-				}}
-			>
-				{t.back}
-			</button>
+			<BackButton style={{ marginBottom: "1.5rem" }}>{t.back}</BackButton>
 
 			<div style={{ marginBottom: "1.5rem" }}>
 				<h1

@@ -1,4 +1,5 @@
 import { goBack } from "../router";
+import { BackButton } from "../ui/BackButton";
 
 interface Props {
 	lang?: "nl" | "en";
@@ -554,25 +555,9 @@ export function HoeGebruikView({ lang = "nl" }: Props) {
 					paddingBottom: "1.5rem",
 				}}
 			>
-				<button
-					onClick={goBack}
-					style={{
-						background: "none",
-						border: "none",
-						cursor: "pointer",
-						fontFamily: "var(--font-body)",
-						fontSize: "0.78rem",
-						fontWeight: 700,
-						letterSpacing: "0.08em",
-						textTransform: "uppercase",
-						color: "var(--color-gray)",
-						padding: 0,
-						marginBottom: "1rem",
-						display: "block",
-					}}
-				>
+				<BackButton onClick={goBack} style={{ marginBottom: "1rem" }}>
 					{C.back}
-				</button>
+				</BackButton>
 				<span style={labelStyle}>{C.handleiding}</span>
 				<h1
 					style={{

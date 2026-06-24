@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { exportSession, getSession } from "../lib/storage";
 import { navigate } from "../router";
+import { BackButton } from "../ui/BackButton";
 import type { TastingNote, TastingSession } from "../types";
 
 interface SessionRecapProps {
@@ -96,9 +97,12 @@ export function SessionRecap({ id, lang = "nl" }: SessionRecapProps) {
 		return (
 			<div style={wrap}>
 				<p style={{ fontSize: "1.1rem" }}>{t.nietGevonden}</p>
-				<button type="button" onClick={() => navigate("/")} style={linkBtn}>
+				<BackButton
+					onClick={() => navigate("/")}
+					style={{ color: "var(--color-primary)", marginBottom: "1rem" }}
+				>
 					← Dashboard
-				</button>
+				</BackButton>
 			</div>
 		);
 	}
@@ -196,13 +200,12 @@ export function SessionRecap({ id, lang = "nl" }: SessionRecapProps) {
 
 	return (
 		<div style={wrap}>
-			<button
-				type="button"
+			<BackButton
 				onClick={() => navigate(`/sessie/${id}`)}
-				style={linkBtn}
+				style={{ color: "var(--color-primary)", marginBottom: "1rem" }}
 			>
 				<ArrowLeft size={14} /> {t.terug}
-			</button>
+			</BackButton>
 
 			<span style={eyebrowStyle}>{t.eyebrow}</span>
 			<h1
@@ -421,18 +424,3 @@ const actionBtn = {
 	cursor: "pointer",
 };
 
-const linkBtn = {
-	display: "inline-flex",
-	alignItems: "center",
-	gap: "0.3rem",
-	background: "none",
-	border: "none",
-	cursor: "pointer",
-	fontFamily: "var(--font-body)",
-	fontSize: "0.78rem",
-	fontWeight: 700,
-	letterSpacing: "0.06em",
-	color: "var(--color-primary)",
-	padding: 0,
-	marginBottom: "1rem",
-};
