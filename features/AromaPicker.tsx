@@ -21,6 +21,8 @@ interface AromaPickerProps {
 	onTertiairChange: (aromas: string[]) => void;
 	lang?: Lang;
 	mode?: "list" | "tiles";
+	// Overschrijft het kop-label in tiles-modus (bv. "Smaakcategorieën" i.p.v. aroma).
+	tilesLabel?: string;
 }
 
 const TILE_CATEGORIES_NL = [
@@ -80,6 +82,7 @@ export function AromaPicker({
 	onTertiairChange,
 	lang = "nl",
 	mode = "list",
+	tilesLabel,
 }: AromaPickerProps) {
 	const [zoekterm, setZoekterm] = useState("");
 	const [customAroma, setCustomAroma] = useState("");
@@ -110,7 +113,7 @@ export function AromaPicker({
 						color: "var(--color-on-surface)",
 					}}
 				>
-					{isEN ? "Aroma categories" : "Aromacategorieën"}
+					{tilesLabel ?? (isEN ? "Aroma categories" : "Aromacategorieën")}
 				</span>
 				<p
 					style={{
@@ -402,7 +405,8 @@ function AromaLijst({
 	const matchesSearch = (a: string) => {
 		if (!term) return true;
 		if (a.toLowerCase().includes(term)) return true;
-		if (isENterms) return (EN_AROMA_LABELS[a] ?? "").toLowerCase().includes(term);
+		if (isENterms)
+			return (EN_AROMA_LABELS[a] ?? "").toLowerCase().includes(term);
 		return false;
 	};
 

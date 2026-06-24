@@ -7,9 +7,13 @@ import { BottleTasting } from "./views/BottleTasting";
 import { BronnenView } from "./views/BronnenView";
 // Views (geleidelijk invullen per fase)
 import { Dashboard } from "./views/Dashboard";
+import { FlightBuilder } from "./views/FlightBuilder";
+import { FlightImport } from "./views/FlightImport";
 import { HoeGebruikView } from "./views/HoeGebruikView";
+import { LiveSession } from "./views/LiveSession";
 import { NewSession } from "./views/NewSession";
 import { SessionDetail } from "./views/SessionDetail";
+import { SessionRecap } from "./views/SessionRecap";
 import { Settings } from "./views/Settings";
 
 interface TastingAppProps {
@@ -61,6 +65,14 @@ export function TastingApp({ lang = "nl" }: TastingAppProps) {
 						lang={lang}
 					/>
 				);
+			case "/sessie/:id/live":
+				return <LiveSession sessionId={params.id} lang={lang} />;
+			case "/sessie/:id/overzicht":
+				return <SessionRecap id={params.id} lang={lang} />;
+			case "/flight/nieuw":
+				return <FlightBuilder lang={lang} />;
+			case "/flight/:payload":
+				return <FlightImport payload={params.payload} lang={lang} />;
 			case "/archief":
 				return <Archive lang={lang} />;
 			case "/instellingen":

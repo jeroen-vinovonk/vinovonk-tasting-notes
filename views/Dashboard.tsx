@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { BiodynamischDagType } from "../lib/biodynamisch";
 import { getBiodynamischInfo } from "../lib/biodynamisch";
-import { getSessions } from "../lib/storage";
+import { createSession, getSessions } from "../lib/storage";
 import { navigate } from "../router";
 import type { SessionSummary } from "../types";
 
@@ -44,6 +44,14 @@ export function Dashboard({ lang = "nl" }: DashboardProps) {
 	useEffect(() => {
 		setSessions(getSessions());
 	}, []);
+
+	function startLive() {
+		const datum = format(new Date(), "d MMMM yyyy", { locale });
+		const naam =
+			lang === "en" ? `Live tasting ${datum}` : `Live proeverij ${datum}`;
+		const sessie = createSession(naam);
+		navigate(`/sessie/${sessie.id}/live`);
+	}
 
 	return (
 		<div
@@ -113,38 +121,108 @@ export function Dashboard({ lang = "nl" }: DashboardProps) {
 				</button>
 			</div>
 
-			{/* Nieuwe sessie knop */}
-			<button
-				onClick={() => navigate("/sessie/nieuw")}
+			{/* Start-knoppen */}
+			<div
 				style={{
-					display: "inline-flex",
-					alignItems: "center",
-					gap: "0.5rem",
-					background: "var(--color-primary)",
-					color: "#fff",
-					border: "4px solid var(--color-border)",
-					boxShadow: "4px 4px 0px 0px #000",
-					padding: "0.75rem 1.5rem",
-					fontFamily: "var(--font-body)",
-					fontWeight: 700,
-					fontSize: "0.82rem",
-					letterSpacing: "0.1em",
-					textTransform: "uppercase",
-					cursor: "pointer",
+					display: "flex",
+					gap: "0.75rem",
+					flexWrap: "wrap",
 					marginBottom: "2rem",
-					transition: "transform 150ms, box-shadow 150ms",
-				}}
-				onMouseEnter={(e) => {
-					e.currentTarget.style.transform = "translate(-2px, -2px)";
-					e.currentTarget.style.boxShadow = "6px 6px 0px 0px #000";
-				}}
-				onMouseLeave={(e) => {
-					e.currentTarget.style.transform = "translate(0, 0)";
-					e.currentTarget.style.boxShadow = "4px 4px 0px 0px #000";
 				}}
 			>
-				+ {lang === "en" ? "New session" : "Nieuwe sessie"}
-			</button>
+				<button
+					onClick={startLive}
+					style={{
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "0.5rem",
+						background: "var(--color-primary)",
+						color: "#fff",
+						border: "4px solid var(--color-border)",
+						boxShadow: "4px 4px 0px 0px #000",
+						padding: "0.75rem 1.5rem",
+						fontFamily: "var(--font-body)",
+						fontWeight: 700,
+						fontSize: "0.82rem",
+						letterSpacing: "0.1em",
+						textTransform: "uppercase",
+						cursor: "pointer",
+						transition: "transform 150ms, box-shadow 150ms",
+					}}
+					onMouseEnter={(e) => {
+						e.currentTarget.style.transform = "translate(-2px, -2px)";
+						e.currentTarget.style.boxShadow = "6px 6px 0px 0px #000";
+					}}
+					onMouseLeave={(e) => {
+						e.currentTarget.style.transform = "translate(0, 0)";
+						e.currentTarget.style.boxShadow = "4px 4px 0px 0px #000";
+					}}
+				>
+					⚡ {lang === "en" ? "Live tasting" : "Live proeven"}
+				</button>
+
+				<button
+					onClick={() => navigate("/sessie/nieuw")}
+					style={{
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "0.5rem",
+						background: "var(--color-white)",
+						color: "var(--color-on-surface)",
+						border: "4px solid var(--color-border)",
+						boxShadow: "4px 4px 0px 0px #000",
+						padding: "0.75rem 1.5rem",
+						fontFamily: "var(--font-body)",
+						fontWeight: 700,
+						fontSize: "0.82rem",
+						letterSpacing: "0.1em",
+						textTransform: "uppercase",
+						cursor: "pointer",
+						transition: "transform 150ms, box-shadow 150ms",
+					}}
+					onMouseEnter={(e) => {
+						e.currentTarget.style.transform = "translate(-2px, -2px)";
+						e.currentTarget.style.boxShadow = "6px 6px 0px 0px #000";
+					}}
+					onMouseLeave={(e) => {
+						e.currentTarget.style.transform = "translate(0, 0)";
+						e.currentTarget.style.boxShadow = "4px 4px 0px 0px #000";
+					}}
+				>
+					+ {lang === "en" ? "New session" : "Nieuwe sessie"}
+				</button>
+
+				<button
+					onClick={() => navigate("/flight/nieuw")}
+					style={{
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "0.5rem",
+						background: "var(--color-white)",
+						color: "var(--color-on-surface)",
+						border: "4px solid var(--color-border)",
+						boxShadow: "4px 4px 0px 0px #000",
+						padding: "0.75rem 1.5rem",
+						fontFamily: "var(--font-body)",
+						fontWeight: 700,
+						fontSize: "0.82rem",
+						letterSpacing: "0.1em",
+						textTransform: "uppercase",
+						cursor: "pointer",
+						transition: "transform 150ms, box-shadow 150ms",
+					}}
+					onMouseEnter={(e) => {
+						e.currentTarget.style.transform = "translate(-2px, -2px)";
+						e.currentTarget.style.boxShadow = "6px 6px 0px 0px #000";
+					}}
+					onMouseLeave={(e) => {
+						e.currentTarget.style.transform = "translate(0, 0)";
+						e.currentTarget.style.boxShadow = "4px 4px 0px 0px #000";
+					}}
+				>
+					⬡ {lang === "en" ? "Share flight (QR)" : "Flight delen (QR)"}
+				</button>
+			</div>
 
 			{/* Sessie lijst */}
 			{sessions.length === 0 ? (

@@ -217,6 +217,17 @@ export function exportAllData(): string {
 	);
 }
 
+// Eén sessie als backup-JSON (zelfde vorm als exportAllData, importeerbaar).
+export function exportSession(id: string): string | null {
+	const session = getSession(id);
+	if (!session) return null;
+	return JSON.stringify(
+		{ version: 1, exportDate: new Date().toISOString(), sessions: [session] },
+		null,
+		2,
+	);
+}
+
 export function importData(json: string): {
 	imported: number;
 	errors: string[];

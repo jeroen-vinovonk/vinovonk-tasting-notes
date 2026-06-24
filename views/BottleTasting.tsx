@@ -307,13 +307,16 @@ export function BottleTasting({
 				padding: "2rem var(--gap)",
 			}}
 		>
-			{/* Back */}
-			<button
-				onClick={() => navigate(`/sessie/${sessionId}`)}
-				style={backBtnStyle}
-			>
-				← {t.back}
-			</button>
+			{/* Back + Print row */}
+			<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+				<button
+					type="button"
+					onClick={() => navigate(`/sessie/${sessionId}`)}
+					style={backBtnStyle}
+				>
+					← {t.back}
+				</button>
+			</div>
 
 			{/* DrankType selector */}
 			<Card style={{ marginBottom: "1.5rem" }}>
