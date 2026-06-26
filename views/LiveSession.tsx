@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -18,6 +18,7 @@ import {
 	getWijnTypeOpties,
 	getZoetheidOpties,
 } from "../lib/form-labels";
+import { predictRank, rankNotes } from "../lib/ranking";
 import { addFles, getSession, updateFles } from "../lib/storage";
 import { navigate } from "../router";
 import { BackButton } from "../ui/BackButton";
@@ -102,6 +103,14 @@ const T = {
 		nietGevonden: "Sessie niet gevonden",
 		opgeslagenToast: "opgeslagen",
 		leegToast: "Niks ingevuld — volgende wijn",
+		rankingTitle: "Ranking tot nu toe",
+		rankingEmpty: "Nog geen cijfers gegeven.",
+		rankWord: "Rank",
+		tussen: "tussen",
+		en2: "en",
+		bovenaan: "bovenaan de ranking",
+		onderaan: "onderaan de ranking",
+		enige: "de enige met een cijfer",
 	},
 	en: {
 		eyebrow: "Live tasting",
@@ -147,6 +156,14 @@ const T = {
 		nietGevonden: "Session not found",
 		opgeslagenToast: "saved",
 		leegToast: "Nothing entered — next wine",
+		rankingTitle: "Ranking so far",
+		rankingEmpty: "No scores yet.",
+		rankWord: "Rank",
+		tussen: "between",
+		en2: "and",
+		bovenaan: "top of the ranking",
+		onderaan: "bottom of the ranking",
+		enige: "the only one scored",
 	},
 };
 
@@ -185,6 +202,9 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 	const [notitie, setNotitie] = useState("");
 	const [busy, setBusy] = useState(false);
 	const [flightWines, setFlightWines] = useState<string[]>([]);
+	// Alle al opgeslagen flessen — voedt de ranking + de live rang-voorspelling.
+	const [allNotes, setAllNotes] = useState<TastingNote[]>([]);
+	const [rankOpen, setRankOpen] = useState(false);
 	const touchStart = useRef<{ x: number; y: number } | null>(null);
 
 	useEffect(() => {
@@ -194,6 +214,7 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 			return;
 		}
 		setSessieNaam(sessie.naam);
+		setAllNotes(sessie.flessen);
 		const startIndex = sessie.flessen.length + 1;
 		setIndex(startIndex);
 		setSavedCount(sessie.flessen.length);
@@ -338,6 +359,7 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 		const ses = getSession(sessionId);
 		const flessen = ses?.flessen ?? [];
 		setSavedCount(flessen.length);
+		setAllNotes(flessen);
 		if (pos >= 1 && pos <= flessen.length) {
 			loadCard(flessen[pos - 1], pos);
 		} else {
@@ -421,6 +443,12 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 
 	const score10 = Array.from({ length: 10 }, (_, i) => i + 1);
 
+	// Ranking van alle al genoteerde cijfers (hoog → laag).
+	const ranked = rankNotes(allNotes);
+	// Waar zou het huidige cijfer landen? (huidige fles uitgesloten bij bewerken)
+	const prediction =
+		score != null ? predictRank(allNotes, score, editingId) : null;
+
 	return (
 		<div
 			onTouchStart={(e) => {
@@ -496,6 +524,119 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 			>
 				{t.intro}
 			</p>
+
+			{/* Ranking tot nu toe — uitklapbaar, zodat je wijnen kunt vergelijken */}
+			<div style={{ marginBottom: "1.5rem" }}>
+				<button
+					type="button"
+					onClick={() => setRankOpen((o) => !o)}
+					aria-expanded={rankOpen}
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						width: "100%",
+						minHeight: 48,
+						padding: "0.6rem 0.9rem",
+						fontFamily: "var(--font-body)",
+						fontWeight: 700,
+						fontSize: "0.72rem",
+						letterSpacing: "0.12em",
+						textTransform: "uppercase",
+						cursor: "pointer",
+						background: "var(--color-white)",
+						color: "var(--color-on-surface)",
+						border: "4px solid var(--color-border)",
+						boxSizing: "border-box",
+					}}
+				>
+					<span>
+						{t.rankingTitle}
+						{ranked.length > 0 ? ` (${ranked.length})` : ""}
+					</span>
+					<ChevronDown
+						size={18}
+						style={{
+							transition: "transform 0.15s",
+							transform: rankOpen ? "rotate(180deg)" : "none",
+						}}
+					/>
+				</button>
+				{rankOpen && (
+					<div
+						style={{
+							borderLeft: "4px solid var(--color-border)",
+							borderRight: "4px solid var(--color-border)",
+							borderBottom: "4px solid var(--color-border)",
+							padding: "0.5rem 0.9rem 0.75rem",
+						}}
+					>
+						{ranked.length === 0 ? (
+							<p
+								style={{
+									fontSize: "0.85rem",
+									color: "var(--color-gray)",
+									margin: "0.5rem 0",
+								}}
+							>
+								{t.rankingEmpty}
+							</p>
+						) : (
+							ranked.map((r) => {
+								const isCurrent = editingId != null && r.note.id === editingId;
+								return (
+									<div
+										key={r.note.id}
+										style={{
+											display: "flex",
+											alignItems: "baseline",
+											gap: "0.6rem",
+											padding: "0.4rem 0",
+											borderBottom: "1px solid var(--color-border)",
+											fontWeight: isCurrent ? 700 : 400,
+										}}
+									>
+										<span
+											style={{
+												fontFamily: "var(--font-headline)",
+												fontWeight: 900,
+												fontSize: "0.9rem",
+												color: "var(--color-gray)",
+												minWidth: "1.6rem",
+											}}
+										>
+											#{r.rank}
+										</span>
+										<span
+											style={{
+												flex: 1,
+												fontSize: "0.9rem",
+												color: "var(--color-on-surface)",
+												overflow: "hidden",
+												textOverflow: "ellipsis",
+												whiteSpace: "nowrap",
+											}}
+										>
+											{r.naam}
+											{isCurrent ? " ←" : ""}
+										</span>
+										<span
+											style={{
+												fontFamily: "var(--font-headline)",
+												fontWeight: 900,
+												fontSize: "1rem",
+												color: "var(--color-primary)",
+											}}
+										>
+											{r.score}
+										</span>
+									</div>
+								);
+							})
+						)}
+					</div>
+				)}
+			</div>
 
 			{/* Naam / nummer */}
 			<input
@@ -780,6 +921,49 @@ export function LiveSession({ sessionId, lang = "nl" }: LiveSessionProps) {
 					);
 				})}
 			</div>
+
+			{/* Live voorspelling: waar landt dit cijfer in de ranking? */}
+			{prediction && (
+				<div
+					style={{
+						display: "flex",
+						alignItems: "baseline",
+						gap: "0.6rem",
+						padding: "0.6rem 0.9rem",
+						marginBottom: "1.5rem",
+						background: "var(--color-white)",
+						border: "4px solid var(--color-primary)",
+						boxShadow: "4px 4px 0 var(--color-on-surface)",
+					}}
+				>
+					<span
+						style={{
+							fontFamily: "var(--font-headline)",
+							fontWeight: 900,
+							fontSize: "1.1rem",
+							color: "var(--color-primary)",
+							whiteSpace: "nowrap",
+						}}
+					>
+						{t.rankWord} #{prediction.rank}
+					</span>
+					<span
+						style={{
+							fontSize: "0.85rem",
+							color: "var(--color-on-surface)",
+							lineHeight: 1.35,
+						}}
+					>
+						{prediction.above && prediction.below
+							? `${t.tussen} ${prediction.above.naam} ${prediction.above.score} ${t.en2} ${prediction.below.naam} ${prediction.below.score}`
+							: prediction.below
+								? `${t.bovenaan} · /${prediction.total}`
+								: prediction.above
+									? `${t.onderaan} · /${prediction.total}`
+									: t.enige}
+					</span>
+				</div>
+			)}
 
 			{/* Vaste actiebalk onderaan */}
 			<div
