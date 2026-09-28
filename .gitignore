@@ -1,4 +1,7 @@
 node_modules/
+# Zonder schuine streep erbij: de node_modules in de root is een symlink naar
+# standalone/node_modules, en `node_modules/` matcht alleen echte mappen.
+node_modules
 dist/
 .DS_Store
 *.log
